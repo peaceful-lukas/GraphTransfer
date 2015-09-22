@@ -1,6 +1,9 @@
+
 local_env = 0;
 
-% cd /v9/code/GraphTransfer
+if ~local_env
+    cd /v9/code/GraphTransfer
+end
 
 addpath 'util'
 addpath 'param'
