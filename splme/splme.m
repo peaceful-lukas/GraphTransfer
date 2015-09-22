@@ -1,4 +1,4 @@
-function [W U] = splme(DS, param, initialized)
+function [W U] = splme(DS, param, local_env)
 
 % init
 [U param] = initU(DS, param);
@@ -24,7 +24,6 @@ while( n < param.maxAlter & iter_condition )
     [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
 
     if accuracy > highest_acc
-        local_env = 1;
         saveResult(param.method, param.dataset, accuracy, {param, W, U, accuracy}, local_env);
 
         highest_acc = accuracy;
