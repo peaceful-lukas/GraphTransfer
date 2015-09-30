@@ -1,4 +1,4 @@
-function loss = sampleLoss(DS, W, U, param)
+function loss = local_sampleLoss(DS, W, U, W_orig, U_orig, param)
 
 X = DS.D;
 cTriplets = sampleClassificationTriplets(DS, W, U, param);
@@ -31,12 +31,6 @@ if num_sTriplets > 0
     end
 end
 
-bal_c = param.bal_c/(param.bal_c + param.bal_s);
-bal_s = param.bal_s/(param.bal_c + param.bal_s);
-
-cErr = bal_c*cErr;
-sErr = bal_s*sErr;
-
-loss = param.bal_c*cErr + param.bal_s*sErr + param.lambda_W*0.5*norm(W, 'fro')^2 + param.lambda_U*0.5*norm(U, 'fro')^2;
-fprintf('cV: %d / sV: %d / cE: %f / sE: %f / normW: %f / normU: %f / ', num_cV, num_sV, cErr, sErr, norm(W, 'fro'), norm(U, 'fro'));
+loss = cErr + sErr + param.lambda_W_local*0.5*norm(W - W_orig, 'fro')^2 + param.lambda_U_local*0.5*norm(U - U_orig, 'fro')^2;
+fprintf('cV: %d / sV: %d / cE: %f / sE: %f / norm(W - W_orig): %f / norm(U - U_orig): %f / ', num_cV, num_sV, cErr, sErr, norm(W-W_orig, 'fro'), norm(U-U_orig, 'fro'));
 

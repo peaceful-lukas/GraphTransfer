@@ -1,4 +1,4 @@
-function [W U] = splme(DS, param, local_env)
+% function [W U param] = splme(DS, param, local_env)
 
 % init
 [U param] = initU(DS, param);
@@ -39,3 +39,6 @@ end
 
 W = highest_W;
 U = highest_U;
+
+
+coord_idx = visualizePrototypes(U, param, [], []);

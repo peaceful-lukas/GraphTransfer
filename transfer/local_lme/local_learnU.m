@@ -1,4 +1,6 @@
-function U = learnU(DS, W, U, param)
+function U = local_learnU(DS, W, U, param, trainTargetClasses)
+
+U_orig = U;
 
 WX = W*DS.D;
 aux = eye(sum(param.numPrototypes));
@@ -7,17 +9,17 @@ dispCycle = 100;
 n = 1;
 
 tic;
-while n <= param.maxIterU
-    cTriplets = sampleClassificationTriplets(DS, W, U, param);
-    sTriplets = sampleStructurePreservingTriplets(DS, W, U, param);
+while n <= param.maxIterU;
+    cTriplets = local_sampleClassificationTriplets(DS, W, U, param, trainTargetClasses);
+    sTriplets = local_sampleStructurePreservingTriplets(DS, W, U, param, trainTargetClasses);
 
-    dU = computeGradient(DS, WX, U, cTriplets, sTriplets, aux, param);
+    dU = computeGradient(WX, U, U_orig, aux, cTriplets, sTriplets, param, trainTargetClasses);
     U = update(U, dU, param);
 
     if ~mod(n, dispCycle)
         timeElapsed = toc;
         fprintf('U%d) ', n);
-        loss = sampleLoss(DS, W, U, param);
+        loss = local_sampleLoss(DS, W, U, W, U_orig, param);
         fprintf('avg time: %f\n', timeElapsed/dispCycle);
 
         tic;
@@ -26,16 +28,20 @@ while n <= param.maxIterU
     n = n + 1;
 end
 
+U_retrained = U;
+
+
+
+
 % update
 function U = update(U, dU, param)
 
-U = U - param.lr_U * dU;
+U = U - param.lr_U_local * dU;
 
 
 % gradient computation
-function dU = computeGradient(DS, WX, U, cTriplets, sTriplets, aux, param)
+function dU = computeGradient(WX, U, U_orig, aux, cTriplets, sTriplets, param, trainTargetClasses)
 
-X = DS.D;
 num_cTriplets = size(cTriplets, 1);
 num_sTriplets = size(sTriplets, 1);
 
@@ -54,8 +60,11 @@ if num_sTriplets > 0
     s_dU = s_dU/param.s_batchSize;
 end
 
-bal_c = param.bal_c/(param.bal_c + param.bal_s);
-bal_s = param.bal_s/(param.bal_c + param.bal_s);
+bal_c = param.bal_c/(param.bal_c + param.bal_s + param.lambda_U_local);
+bal_s = param.bal_s/(param.bal_c + param.bal_s + param.lambda_U_local);
+lambda_U_local = param.lambda_U_local/(param.bal_c + param.bal_s + param.lambda_U_local);
 
-dU = bal_c*c_dU + bal_s*s_dU + param.lambda_U*U;
+
+dU = bal_c*c_dU + bal_s*s_dU + lambda_U_local*(U - U_orig);
+
 

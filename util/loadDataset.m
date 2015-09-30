@@ -1,26 +1,22 @@
 function DS = loadDataset(dataset, local)
 
-if local
-    ds_dir = '/Users/lukas/Desktop/pascal3d_pascal/';
-    load([ds_dir 'trF.mat']);
-    load([ds_dir 'trL.mat']);
-    load([ds_dir 'teF.mat']);
-    load([ds_dir 'teL.mat']);
+if local, ds_dir = datasetDirLocal(dataset);
+else,     ds_dir = datasetRootDir(dataset); end
 
-% server
-else
-    ds_dir = datasetRootDir(dataset);
-    load([ds_dir 'proc/trF.mat']);
-    load([ds_dir 'proc/trL.mat']);
-    load([ds_dir 'proc/teF.mat']);
-    load([ds_dir 'proc/teL.mat']);
-end
+load([ds_dir 'trF.mat']);
+load([ds_dir 'trL.mat']);
+load([ds_dir 'trI.mat']);
+load([ds_dir 'teF.mat']);
+load([ds_dir 'teL.mat']);
+load([ds_dir 'teI.mat']);
 
 DS = {};
 DS.D = trF;
 DS.DL = trL;
+DS.DI = trI;
 DS.T = teF;
 DS.TL = teL;
+DS.TI = teI;
 
 
 
@@ -29,8 +25,17 @@ function ds_dir = datasetRootDir(dataset)
 ds_dir = '';
 
 if     strcmp(dataset, 'awa'),                  ds_dir = '';
-elseif strcmp(dataset, 'pascal3d_pascal'),      ds_dir = '/v9/PASCAL3D/pascal/';
+elseif strcmp(dataset, 'pascal3d_pascal'),      ds_dir = '/v9/PASCAL3D/pascal/proc/';
 
 else
     fprintf('[loadDataset] no such a dataset.\nDataset dir has been set to be empty.\n');
+end
+
+
+function ds_dir_local = datasetDirLocal(dataset)
+
+ds_dir_local = '';
+
+if     strcmp(dataset, 'awa'),                  ds_dir_local = '/Users/lukas/Desktop/awa/';
+elseif strcmp(dataset, 'pascal3d_pascal'),      ds_dir_local = '/Users/lukas/Desktop/pascal3d_pascal/';
 end

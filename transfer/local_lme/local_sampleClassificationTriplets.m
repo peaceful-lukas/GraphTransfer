@@ -1,4 +1,4 @@
-function cTriplets = sampleClassificationTriplets(DS, W, U, param)
+function cTriplets = sampleClassificationTriplets(DS, W, U, param, trainTargetClasses)
 
 % (i, y_i, c)
 X = DS.D;
@@ -20,10 +20,16 @@ c_vec = ceil(param.numPrototypes(class_vec).*rand(length(i_vec), 1));
 
 c_vec = c_vec + offset_vec(class_vec);
 
-useless = find(yi_vec == -1);
-i_vec(useless) = [];
-yi_vec(useless) = [];
-c_vec(useless) = [];
+% useless = find(yi_vec == -1);
+% i_vec(useless) = [];
+% yi_vec(useless) = [];
+% c_vec(useless) = [];
+
+[~, target_idx, ~] = intersect(yi_vec, trainTargetClasses);
+i_vec = i_vec(target_idx);
+yi_vec = yi_vec(target_idx);
+c_vec = c_vec(target_idx);
+
 
 
 cTriplets = [i_vec yi_vec c_vec];

@@ -48,7 +48,7 @@ function [X_sol candidate_matches score_GM] = progressiveGraphMatching(U1, U2, p
         %---- Check to Continue ----
         if iterGM == maxIterGM, stopFlag = 1; end;
         if stopFlag
-            fprintf('>>>>>>>>>>>>>> reached the max score.\n');
+            % fprintf('>>>>>>>>>>>>>> reached the max score.\n');
             break;
         end
         
@@ -82,7 +82,7 @@ function [X_sol candidate_matches score_GM] = progressiveGraphMatching(U1, U2, p
         affinityMatrix_new = computeAffinityMatrix(U1, U2, candidate_matches_new);
         [group1, group2] = make_group12(candidate_matches_new);
 
-        fprintf('iter %d\n', iterGM);
+        % fprintf('iter %d\n', iterGM);
     end
 
 
