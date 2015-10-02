@@ -56,7 +56,7 @@ end
 
 clearvars -except DS local_env
 load ~/Desktop/exp_results/awa/splme_awa_6833.mat
-param = result{1}
+param = result{1};
 W = result{2};
 U = result{3};
 

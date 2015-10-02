@@ -13,11 +13,12 @@ addpath 'pgm'
 addpath 'pgm/RRWM/'
 addpath 'transfer'
 addpath 'transfer/local_lme/'
+addpath 'transfer/util/'
 addpath 'tool/vis/distinguishable_colors/'
 % addpath(genpath(pwd));
 
-% dataset = 'pascal3d_pascal';
-dataset = 'awa';
+dataset = 'pascal3d_pascal';
+% dataset = 'awa';
 method = 'splme';
 
 DS = loadDataset(dataset, local_env);
@@ -31,15 +32,16 @@ splme;
 
 %%%%%%% TRANSFER
 
-% clearvars -except DS local_env
-% load ~/Desktop/exp_results/awa/splme_awa_6881.mat
-% dataset = 'awa';
-% method = 'splme';
-% local_env = 1;
-% param = result{1};
-% W = result{2};
-% U = result{3};
-% perClassScores = result{4};
+clearvars -except DS local_env
+load ~/Desktop/exp_results/awa/splme_awa_6881.mat
+dataset = 'awa';
+method = 'splme';
+local_env = 1;
+param = result{1};
+W = result{2};
+U = result{3};
+perClassScores = result{4};
+coord_idx = [];
 
 clsnames = stringifyClasses(param.dataset);
 [tPairs str_tPairs scores S] = transferPairs(U, param);
@@ -81,14 +83,10 @@ for i=1:size(tPairs, 1)
         transfer_dispAccuracies(DS, W_new, U_new, W0, U0, param_new, param0);
 
         % Visualize
+        visualize = 1;
+        result = findExamples('gotTrueAfterTransfer', c2, DS, W, U, param, W_new, U_new, param_new, visualize);
         coord_idx = visualizePrototypes(U_new, param_new, coord_idx, inferred_idx);
         pause;
     end
-
-    % result = findExamples('gotTrueAfterTransfer', c2, DS, W, U, param, W_new, U_new, param_new);
-    % for r=1:length(result)
-    %     imshow(DS.DI{result(r)});
-    %     pause;
-    % end
 end
 

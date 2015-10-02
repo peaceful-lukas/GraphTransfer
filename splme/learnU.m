@@ -10,7 +10,9 @@ tic;
 while n <= param.maxIterU
     cTriplets = sampleClassificationTriplets(DS, W, U, param);
     sTriplets = sampleStructurePreservingTriplets(DS, W, U, param);
-
+    % cPairs = sampleClassificationUnaryPairs(DS, W, U, param);
+    
+    % dU = computeGradient(DS, WX, U, cTriplets, sTriplets, cPairs, aux, param);
     dU = computeGradient(DS, WX, U, cTriplets, sTriplets, aux, param);
     U = update(U, dU, param);
 
@@ -35,15 +37,21 @@ U = U - param.lr_U * dU;
 % gradient computation
 function dU = computeGradient(DS, WX, U, cTriplets, sTriplets, aux, param)
 
-X = DS.D;
 num_cTriplets = size(cTriplets, 1);
 num_sTriplets = size(sTriplets, 1);
+% num_cPairs = size(cPairs, 1);
 
 c_dU = zeros(size(U));
 if num_cTriplets > 0
     c_dU = WX(:, cTriplets(:, 1))*(aux(:, cTriplets(:, 3)) - aux(:, cTriplets(:, 2)))';
     c_dU = c_dU/param.c_batchSize;
 end
+
+% cp_dU = zeros(size(U));
+% if num_cPairs > 0
+%     cp_dU = WX(:, cPairs(:, 1))*aux(:, cPairs(:, 2))';
+
+% end
 
 s_dU = zeros(size(U));
 if num_sTriplets > 0
@@ -54,8 +62,11 @@ if num_sTriplets > 0
     s_dU = s_dU/param.s_batchSize;
 end
 
+
+
 bal_c = param.bal_c/(param.bal_c + param.bal_s);
 bal_s = param.bal_s/(param.bal_c + param.bal_s);
 
+% dU = bal_c*c_dU + bal_c*cp_dU + bal_s*s_dU + param.lambda_U*U;
 dU = bal_c*c_dU + bal_s*s_dU + param.lambda_U*U;
 
