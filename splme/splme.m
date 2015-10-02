@@ -24,7 +24,8 @@ while( n < param.maxAlter & iter_condition )
     [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
 
     if accuracy > highest_acc
-        saveResult(param.method, param.dataset, accuracy, {param, W, U, accuracy}, local_env);
+        perClassScores = perClassScore(DS, W, U, param);
+        saveResult(param.method, param.dataset, accuracy, {param, W, U, perClassScores, accuracy}, local_env);
 
         highest_acc = accuracy;
         highest_W = W;
@@ -40,5 +41,8 @@ end
 W = highest_W;
 U = highest_U;
 
-
 coord_idx = visualizePrototypes(U, param, [], []);
+
+
+
+
