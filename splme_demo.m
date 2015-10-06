@@ -5,20 +5,23 @@ local_env = 1;
 %     cd /v9/code/GraphTransfer
 % end
 
-addpath 'util'
-addpath 'param'
-addpath 'ddcrp'
-addpath 'splme'
-addpath 'pgm'
+addpath 'util/'
+addpath 'param/'
+addpath 'ddcrp/'
+addpath 'splme/'
+addpath 'pgm/'
 addpath 'pgm/RRWM/'
-addpath 'transfer'
+addpath 'transfer/'
 addpath 'transfer/local_lme/'
 addpath 'transfer/util/'
+addpath 'tool/vis/'
 addpath 'tool/vis/distinguishable_colors/'
 % addpath(genpath(pwd));
 
-dataset = 'pascal3d_pascal';
-% dataset = 'awa';
+
+% dataset = 'pascal3d_pascal';
+dataset = 'awa';
+% dataset = 'voc';
 method = 'splme';
 
 DS = loadDataset(dataset, local_env);
@@ -34,6 +37,7 @@ splme;
 
 clearvars -except DS local_env
 load ~/Desktop/exp_results/awa/splme_awa_6881.mat
+% load ~/Desktop/exp_results/pascal3d_pascal/splme_pascal3d_pascal_7544.mat
 dataset = 'awa';
 method = 'splme';
 local_env = 1;
@@ -58,14 +62,8 @@ U_new = U;
 for i=1:size(tPairs, 1)
 
     % Transfer direction : c1 ------->>> c2
-    if param_new.numPrototypes(tPairs(i, 1)) > param_new.numPrototypes(tPairs(i, 2))
-        c1 = tPairs(i, 1);
-        c2 = tPairs(i, 2);
-    else
-        c1 = tPairs(i, 2);
-        c2 = tPairs(i, 1);
-    end
-
+    c1 = tPairs(i, 1);
+    c2 = tPairs(i, 2);
     fprintf('\n\n\n================================ %s ---> %s ================================\n', clsnames{c1}, clsnames{c2});
 
     scale_alpha = 1;
@@ -86,7 +84,9 @@ for i=1:size(tPairs, 1)
         visualize = 1;
         result = findExamples('gotTrueAfterTransfer', c2, DS, W, U, param, W_new, U_new, param_new, visualize);
         coord_idx = visualizePrototypes(U_new, param_new, coord_idx, inferred_idx);
-        pause;
+        % pause;
     end
+
+    pause;
 end
 

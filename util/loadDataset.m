@@ -26,6 +26,7 @@ ds_dir = '';
 
 if     strcmp(dataset, 'awa'),                  ds_dir = '';
 elseif strcmp(dataset, 'pascal3d_pascal'),      ds_dir = '/v9/PASCAL3D/pascal/proc/';
+elseif strcmp(dataset, 'voc'),                  ds_dir = '/v9/voc/proc/';
 
 else
     fprintf('[loadDataset] no such a dataset.\nDataset dir has been set to be empty.\n');
@@ -38,4 +39,5 @@ ds_dir_local = '';
 
 if     strcmp(dataset, 'awa'),                  ds_dir_local = '/Users/lukas/Desktop/awa/';
 elseif strcmp(dataset, 'pascal3d_pascal'),      ds_dir_local = '/Users/lukas/Desktop/pascal3d_pascal/';
+elseif strcmp(dataset, 'voc'),                  ds_dir = '/Users/lukas/Desktop/voc/';
 end
