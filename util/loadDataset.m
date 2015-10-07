@@ -27,7 +27,7 @@ ds_dir = '';
 if     strcmp(dataset, 'awa'),                  ds_dir = '/v9/AwA/proc/allclass_split/';
 elseif strcmp(dataset, 'pascal3d_pascal'),      ds_dir = '/v9/PASCAL3D/pascal/proc/';
 elseif strcmp(dataset, 'voc'),                  ds_dir = '/v9/voc/proc/';
-elseif strcmp(dataset, 'AwA_official'),         ds_dir = '/v9/AwA/proc/official_split/'
+elseif strcmp(dataset, 'AwA_official'),         ds_dir = '/v9/AwA/official/proc/'
 
 else
     fprintf('[loadDataset] no such a dataset.\nDataset dir has been set to be empty.\n');
