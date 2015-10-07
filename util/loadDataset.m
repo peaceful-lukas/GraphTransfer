@@ -17,8 +17,8 @@ DS.T = teF;
 DS.DL = trL;
 DS.TL = teL;
 
-if trI == 1, DS.DI = trI; else, fprintf('trI does not exist\n');
-if teI == 1, DS.TI = teI; else, fprintf('teI does not exist\n');
+if trI == 1, DS.DI = trI; else, fprintf('trI does not exist\n'); end
+if teI == 1, DS.TI = teI; else, fprintf('teI does not exist\n'); end
 
 
 
