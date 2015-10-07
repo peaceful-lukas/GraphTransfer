@@ -1,5 +1,5 @@
 
-local_env = 1;
+local_env = 0;
 
 % if ~local_env
 %     cd /v9/code/GraphTransfer
@@ -20,7 +20,7 @@ addpath 'tool/vis/distinguishable_colors/'
 
 
 % dataset = 'pascal3d_pascal';
-dataset = 'awa';
+dataset = 'AwA_30_only';
 % dataset = 'voc';
 method = 'splme';
 

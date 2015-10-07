@@ -12,11 +12,13 @@ load([ds_dir 'teI.mat']);
 
 DS = {};
 DS.D = trF;
-DS.DL = trL;
-DS.DI = trI;
 DS.T = teF;
+
+DS.DL = trL;
 DS.TL = teL;
-DS.TI = teI;
+
+if trI == 1, DS.DI = trI; else, fprintf('trI does not exist\n');
+if teI == 1, DS.TI = teI; else, fprintf('teI does not exist\n');
 
 
 
@@ -24,10 +26,11 @@ function ds_dir = datasetRootDir(dataset)
 
 ds_dir = '';
 
-if     strcmp(dataset, 'awa'),                  ds_dir = '/v9/AwA/proc/allclass_split/';
+if     strcmp(dataset, 'awa'),                  ds_dir = '/v9/AwA/proc/allclass/proc/';
 elseif strcmp(dataset, 'pascal3d_pascal'),      ds_dir = '/v9/PASCAL3D/pascal/proc/';
 elseif strcmp(dataset, 'voc'),                  ds_dir = '/v9/voc/proc/';
-elseif strcmp(dataset, 'AwA_official'),         ds_dir = '/v9/AwA/official/proc/'
+elseif strcmp(dataset, 'AwA_official'),         ds_dir = '/v9/AwA/official/proc/';
+elseif strcmp(dataset, 'AwA_30_only'),          ds_dir = '/v9/AwA/allclass_30_only/proc/';
 
 else
     fprintf('[loadDataset] no such a dataset.\nDataset dir has been set to be empty.\n');
