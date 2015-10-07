@@ -3,22 +3,61 @@ function DS = loadDataset(dataset, local)
 if local, ds_dir = datasetDirLocal(dataset);
 else,     ds_dir = datasetRootDir(dataset); end
 
-load([ds_dir 'trF.mat']);
-load([ds_dir 'trL.mat']);
-load([ds_dir 'trI.mat']);
-load([ds_dir 'teF.mat']);
-load([ds_dir 'teL.mat']);
-load([ds_dir 'teI.mat']);
+% load([ds_dir 'trF.mat']);
+% load([ds_dir 'trL.mat']);
+% load([ds_dir 'trI.mat']);
+% load([ds_dir 'teF.mat']);
+% load([ds_dir 'teL.mat']);
+% load([ds_dir 'teI.mat']);
+% 
+% DS = {};
+% DS.D = trF;
+% DS.T = teF;
+% 
+% DS.DL = trL;
+% DS.TL = teL;
+
+
 
 DS = {};
-DS.D = trF;
-DS.T = teF;
 
-DS.DL = trL;
-DS.TL = teL;
+data_fname = [ds_dir 'trF.mat'];
+if exist(data_fname) == 2
+    load(data_fname);
+    DS.D = trF;
+end
 
-if trI == 1, DS.DI = trI; else, fprintf('trI does not exist\n'); end
-if teI == 1, DS.TI = teI; else, fprintf('teI does not exist\n'); end
+data_fname = [ds_dir 'trL.mat'];
+if exist(data_fname) == 2
+    load(data_fname);
+    DS.DL = trL;
+end
+
+data_fname = [ds_dir 'teF.mat'];
+if exist(data_fname) == 2
+    load(data_fname);
+    DS.T = teF;
+end
+
+data_fname = [ds_dir 'teL.mat'];
+if exist(data_fname) == 2
+    load(data_fname);
+    DS.TL = teL;
+end
+
+data_fname = [ds_dir 'trI.mat'];
+if exist(data_fname) == 2
+    load(data_fname);
+    DS.DI = trI;
+end
+
+data_fname = [ds_dir 'teI.mat'];
+if exist(data_fname) == 2
+    load(data_fname);
+    DS.TI = teI;
+end
+
+
 
 
 
