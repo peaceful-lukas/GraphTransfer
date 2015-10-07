@@ -1,4 +1,4 @@
-function sTriplets = generateLocasStructurePreservingTriplets(param_new)
+function sTriplets = generateLocalStructurePreservingTriplets(param_new)
 
 startProtoIdx = [0; cumsum(param_new.numPrototypes)];
 sTriplets = [];

@@ -2,7 +2,7 @@ function [U_retrained param_new] = local_train(DS, W, U_new, param_new, trainTar
 
 % regenerate structure-preserving triplets
 fprintf('Local Training LME ... \n');
-param_new.sTriplets = generateLocasStructurePreservingTriplets(param_new);
+param_new.sTriplets = generateLocalStructurePreservingTriplets(param_new);
 
 % locally learn prototypes (U)
 % W_retrained = local_learnW(DS, W, U_new, param_new, trainTargetClasses);
