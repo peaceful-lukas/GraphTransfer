@@ -1,4 +1,4 @@
-function U = local_learnU(DS, W, U, param, trainTargetClasses)
+function U = local_learnU(DS, W, U, param, trainTargetClasses, targetProtoIdx)
 
 U_orig = U;
 
@@ -10,8 +10,8 @@ n = 1;
 
 tic;
 while n <= param.maxIterU;
-    cTriplets = local_sampleClassificationTriplets(DS, W, U, param, trainTargetClasses);
-    sTriplets = local_sampleStructurePreservingTriplets(DS, W, U, param, trainTargetClasses);
+    cTriplets = local_sampleClassificationTriplets(DS, W, U, param, trainTargetClasses, targetProtoIdx);
+    sTriplets = local_sampleStructurePreservingTriplets(DS, W, U, param, trainTargetClasses, targetProtoIdx);
 
     dU = computeGradient(WX, U, U_orig, aux, cTriplets, sTriplets, param, trainTargetClasses);
     U = update(U, dU, param);

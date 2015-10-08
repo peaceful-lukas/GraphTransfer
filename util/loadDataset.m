@@ -82,5 +82,6 @@ ds_dir_local = '';
 
 if     strcmp(dataset, 'awa'),                  ds_dir_local = '/Users/lukas/Desktop/awa/';
 elseif strcmp(dataset, 'pascal3d_pascal'),      ds_dir_local = '/Users/lukas/Desktop/pascal3d_pascal/';
-elseif strcmp(dataset, 'voc'),                  ds_dir = '/Users/lukas/Desktop/voc/';
+elseif strcmp(dataset, 'voc'),                  ds_dir_local = '/Users/lukas/Desktop/voc/';
+elseif strcmp(dataset, 'AwA_30_only'),          ds_dir_local = '/Users/lukas/Desktop/AwA_30_only/';
 end

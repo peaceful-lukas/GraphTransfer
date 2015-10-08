@@ -54,12 +54,13 @@ if numel(unmatched) > 0
     dispAccuracies(DS, W_new, U_new, W0, U0, param_new, param0);
     trainTargetClasses = getClassesToBeLocallyTrained(DS, W_new, U_new, W0, U0, param_new, param0);
 
-    fprintf('Transfer Result : \n');
-    fprintf('BEFORE TRANSFER >>\n');
-    [~, accuracy] = dispAccuracy(param0.method, DS, W0, U0, param0);
-    fprintf('AFTER TRANSFER >>\n');
-    [~, accuracy] = dispAccuracy(param0.method, DS, W_new, U_new, param_new);
-    fprintf('\n\n');
+    % fprintf('Transfer Result : \n');
+    % fprintf('BEFORE TRANSFER >>\n');
+    % [~, accuracy] = dispAccuracy(param0.method, DS, W0, U0, param0);
+    % fprintf('AFTER TRANSFER >>\n');
+    % [~, accuracy] = dispAccuracy(param0.method, DS, W_new, U_new, param_new);
+    % fprintf('\n\n');
+    % bargraphTransferResult(DS, W_new, U_new, param_new, W0, U0, param0);
 
 else
     fprintf('\n\nNo transfer...\n\n');

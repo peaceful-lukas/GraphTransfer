@@ -41,6 +41,7 @@ if length(special_prototypes) > 0
     legend('show', 'Location', 'SouthEast');
 
     drawlines(U_vis, class_labels, colorList, param, 3);
+    hold off;
 
 else
     U_vis = U(coord_idx, :);
