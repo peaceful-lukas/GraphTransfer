@@ -1,10 +1,10 @@
-param.numClasses = 40;
+param.numClasses = 50;
 param.maxIterW = 1000;
 param.maxIterU = 1000;
 param.maxAlter = 50;
 param.c_batchSize = 100;
 param.s_batchSize = 100;
-param.lowDim = 40;
+param.lowDim = 50;
 param.featureDim = 9216;
 
 param.knn_const = 3; % constant for constructing k-nn graph.
