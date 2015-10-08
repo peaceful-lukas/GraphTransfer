@@ -23,8 +23,8 @@ for c = 1:param.numClasses
     
     for p=1:length(clust)
         
-        % if length(find(ta == p)) < 10 % outliers
-        if length(find(ta == p)) < 3 % outliers
+        if length(find(ta == p)) < 10 % outliers
+        % if length(find(ta == p)) < 3 % outliers
             protoAssign(find(ta == p)) = -1;
             numOutliers = numOutliers + 1;
             fprintf('outliers of the class %d) # of outliers for prototype %d : %d\n', c, p, length(find(ta == p)));
