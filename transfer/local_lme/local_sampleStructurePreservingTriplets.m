@@ -1,4 +1,4 @@
-function sTriplets = sampleStructurePreservingTriplets(DS, W, U, param, trainTargetClasses, targetProtoIdx)
+function sTriplets = local_sampleStructurePreservingTriplets(DS, W, U, param, trainTargetClasses, targetProtoIdx)
 
 % (k, k', l), the indices regard the actual permutation in U
 

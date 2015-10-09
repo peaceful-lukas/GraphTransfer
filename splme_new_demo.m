@@ -8,7 +8,7 @@ local_env = 1;
 addpath 'util/'
 addpath 'param/'
 addpath 'ddcrp/'
-addpath 'splme/'
+addpath 'splme_new/'
 addpath 'pgm/'
 addpath 'pgm/RRWM/'
 addpath 'transfer/'
@@ -16,19 +16,18 @@ addpath 'transfer/local_lme/'
 addpath 'transfer/util/'
 addpath 'tool/vis/'
 addpath 'tool/vis/distinguishable_colors/'
-% addpath(genpath(pwd));
 
 
 % dataset = 'pascal3d_pascal';
 dataset = 'awa';
 % dataset = 'voc';
-method = 'splme';
+method = 'splme_new';
 
 DS = loadDataset(dataset, local_env);
 param = setParameters(dataset, method);
 
 % [W U param] = splme(DS, param, local_env);
-splme;
+splme_new;
 
 
 

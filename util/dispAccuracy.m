@@ -1,6 +1,6 @@
 function [train_acc test_acc] = dispAccuracy(method, DS, W, U, param)
 
-    if strcmp(method, 'splme')
+    if strcmp(method, 'splme') || strcmp(method, 'splme_new')
 
         cumNumProto = cumsum(param.numPrototypes);
         [~, classified_raw] = max(DS.D'*W'*U, [], 2);

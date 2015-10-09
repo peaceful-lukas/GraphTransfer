@@ -8,18 +8,13 @@ for cls = 1:param_after.numClasses
     orig_acc = getOriginalAccuracy(cls, DS, W, U_before, param_before);
     new_acc = getNewAccuracy(cls, DS, W, U_after, param_after);
     acc_list = [acc_list; orig_acc new_acc];
-    % fprintf('Accuracy (%s) : %.4f ----> %.4f ', clsnames{cls}, orig_acc, new_acc);
-    % if orig_acc > new_acc, fprintf('(down)\n');
-    % elseif orig_acc < new_acc, fprintf('(UP)\n');
-    % else fprintf('\n');
-    % end
 end
 
-drawOverlappedBargraph(acc_list);
+drawOverlappedBargraph(acc_list, param_after);
 hold off
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function drawOverlappedBargraph(acc_list)
+function drawOverlappedBargraph(acc_list, param)
 
 min_acc_list = min(acc_list, [], 2);
 sub_acc_list = acc_list-repmat(min_acc_list, 1, 2);
@@ -32,6 +27,10 @@ bar_handle(3).FaceColor = 'y'; % after
 
 legend('overlapped', 'before', 'after');
 
+
+axis([0 51 0 1]);
+category_labels = stringifyClasses(param.dataset);
+xticklabel_rotate([1:50],45, category_labels);
 
 
 

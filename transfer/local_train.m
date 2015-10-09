@@ -6,11 +6,14 @@ param_new.sTriplets = generateLocalStructurePreservingTriplets(param_new);
 
 % locally learn prototypes (U)
 targetProtoIdx = [];
-protoStartIdx = [0; cumsum(param_new.numPrototypes)];
-targetProtoMat = protoStartIdx([trainTargetClasses trainTargetClasses+1]);
-targetProtoMat(:, 1) = targetProtoMat(:, 1) + 1;
-for i=1:length(trainTargetClasses)
-    targetProtoIdx = [targetProtoIdx; (targetProtoMat(i, 1):targetProtoMat(i, 2))'];
+try
+    protoStartIdx = [0; cumsum(param_new.numPrototypes)];
+    targetProtoMat = protoStartIdx([trainTargetClasses trainTargetClasses+1]);
+    targetProtoMat(:, 1) = targetProtoMat(:, 1) + 1;
+    for i=1:length(trainTargetClasses)
+        targetProtoIdx = [targetProtoIdx; (targetProtoMat(i, 1):targetProtoMat(i, 2))'];
+    end
+catch
 end
 
 % W_retrained = local_learnW(DS, W, U_new, param_new, trainTargetClasses);
