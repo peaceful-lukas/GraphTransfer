@@ -11,9 +11,9 @@ addpath 'ddcrp/'
 addpath 'splme_new/'
 addpath 'pgm/'
 addpath 'pgm/RRWM/'
-addpath 'transfer/'
-addpath 'transfer/local_lme/'
-addpath 'transfer/util/'
+addpath 'transfer_splme_new/'
+addpath 'transfer_splme_new/local_lme/'
+addpath 'transfer_splme_new/util/'
 addpath 'tool/vis/'
 addpath 'tool/vis/distinguishable_colors/'
 
@@ -42,7 +42,9 @@ local_env = 1;
 param = result{1};
 W = result{2};
 U = result{3};
-coord_idx = visualizeBoth(DS, W, U, param, [], []);
+% coord_idx = visualizeBoth(DS, W, U, param, [], []);
+param.lambda_U_local = 10; % or 5
+param.lr_U_local = 0.01;
 
 clsnames = stringifyClasses(param.dataset);
 [tPairs str_tPairs scores S] = transferPairs(U, param);
@@ -57,6 +59,7 @@ param_prev = param;
 U0 = U;
 U_prev = U;
 U_new = U;
+i = 2;
 
 for i=1:size(tPairs, 1)
 
@@ -68,42 +71,45 @@ for i=1:size(tPairs, 1)
     scale_alpha = 1;
     [U_new, param_new, matched_pairs, inferred_idx, trainTargetClasses, score_GM] = transfer(DS, W, U_new, W, U_prev, c1, c2, scale_alpha, param_new, param_prev);
 
+    U_prev = U_new;
+    param_prev = param_new;
+
     % Visualize
     % coord_idx = visualizePrototypes(U_new, param_new, coord_idx, inferred_idx);
     % pause;
 
-    if length(trainTargetClasses) > 0
-        trainTargetClasses
-        % % Locally train
+    % if length(trainTargetClasses) > 0
+        % clsnames(trainTargetClasses)'
+        % Locally train
         [U_new param_new] = local_train(DS, W, U_new, param_new, trainTargetClasses);
 
-        % Result
-        % transfer_dispAccuracies(DS, W, U_new, W, U0, param_new, param0);
+    %     % Result
+        transfer_dispAccuracies(DS, W, U_new, W, U_prev, param_new, param_prev);
 
-        % Visualize
-        visualize = 1;
-        % result = findExamples('gotTrueAfterTransfer', c2, DS, W, U, param, W, U_new, param_new, visualize);
-        coord_idx = visualizePrototypes(U_new, param_new, coord_idx, inferred_idx);
-        % pause;
+    %     % Visualize
+    %     % visualize = 1;
+    %     % result = findExamples('gotTrueAfterTransfer', c2, DS, W, U, param, W, U_new, param_new, visualize);
+    %     % coord_idx = visualizePrototypes(U_new, param_new, coord_idx, inferred_idx);
+    %     % pause;
 
         bargraphTransferResult(DS, W, U_new, param_new, U_prev, param_prev);
-    else
-        fprintf('No classes to be learned locally.\n');
-    end
+    % else
+    %     fprintf('No classes to be learned locally.\n');
+    % end
 
-    [C_prev pr_labels_prev] = getConfusionMatrix(DS, W, U_prev, param_prev);
-    [C_new pr_labels_new] = getConfusionMatrix(DS, W, U_new, param_new);
+    % [C_prev pr_labels_prev] = getConfusionMatrix(DS, W, U_prev, param_prev);
+    % [C_new pr_labels_new] = getConfusionMatrix(DS, W, U_new, param_new);
 
-    opts.type = 'predicted';
-    opts.numRows = 5;
-    opts.numCols = 5;
-    opts.title = 'Before Transfer';
-    visualizeConfusionMat(DS, C_prev, pr_labels_prev, c2, opts);
+    % opts.type = 'predicted';
+    % opts.numRows = 5;
+    % opts.numCols = 5;
+    % opts.title = 'Before Transfer';
+    % visualizeConfusionMat(DS, C_prev, pr_labels_prev, c2, opts);
 
-    opts.title = 'After Transfer';
-    visualizeConfusionMat(DS, C_new, pr_labels_new, c2, opts);
+    % opts.title = 'After Transfer';
+    % visualizeConfusionMat(DS, C_new, pr_labels_new, c2, opts);
 
-    C_prev - C_new
+    % C_prev - C_new
 
     U_prev = U_new;
     param_prev = param_new;
