@@ -35,21 +35,18 @@ splme_new;
 %%%%%%% TRANSFER
 
 clearvars -except DS local_env
-% load ~/Desktop/exp_results/AwA_30_only/splme_AwA_30_only_4733.mat
-load ~/Desktop/exp_results/awa/splme_awa_6881.mat
-% load ~/Desktop/exp_results/pascal3d_pascal/splme_pascal3d_pascal_7544.mat
+load ~/Desktop/exp_results/awa/splme_new_awa_5574.mat
 dataset = 'awa';
-method = 'splme';
+method = 'splme_new';
 local_env = 1;
 param = result{1};
 W = result{2};
 U = result{3};
-perClassScores = result{4};
-coord_idx = [];
+coord_idx = visualizeBoth(DS, W, U, param, [], []);
 
 clsnames = stringifyClasses(param.dataset);
 [tPairs str_tPairs scores S] = transferPairs(U, param);
-[tPairs str_tPairs] = setTransferDirections(tPairs, str_tPairs, perClassScores);
+% [tPairs str_tPairs] = setTransferDirections(tPairs, str_tPairs, perClassScores);
 
 
 
