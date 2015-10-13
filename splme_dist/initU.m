@@ -8,13 +8,15 @@ classProtos = [];
 for c = 1:param.numClasses
     class_idx = find(DS.DL == c);
     X_c = DS.D(:, class_idx);
-    D = conDstMat(X_c);
-    D = D./max(max(D));
+    normX_c = normc(X_c);
+    S = normX_c'*normX_c;
     
     numData_c = size(X_c, 2);
-    alpha = numData_c * 0.1; % scale parameter: larger is greater scale
+    % 0.05 / 0.1
+    alpha = numData_c * 0.1; % scale parameter: larger is greater scale 
+
     a = 0;
-    [ta, ~] = ddcrp(D, 'lgstc', alpha, a);
+    [ta, ~] = ddcrp(S, 'lgstc', alpha, a);
 
     % prevent to catch outliers
     protoAssign = zeros(numData_c, 1);
@@ -36,6 +38,7 @@ for c = 1:param.numClasses
 
             classProtos_c = [classProtos_c mean(X_c(:, protoIdx), 2)];
         end
+        fprintf('example assigned of class %d) # of examples for prototype %d : %d\n', c, p, length(protoIdx));
     end
     
     % re-assign to the nearest prototype
@@ -62,7 +65,7 @@ param.knnGraphs = constructKnnGraphs(classProtos, param);
 % param.lowDim = sum(param.numPrototypes) - 1;
 [~, pca_score, ~] = pca(classProtos');
 U0 = pca_score(:, 1:param.lowDim)'; % approximate the original distributions of prototypes.
-% U0 = U0/norm(U0, 'fro');
+U0 = U0/norm(U0, 'fro');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Whether to divide by Frobenius norm or not??

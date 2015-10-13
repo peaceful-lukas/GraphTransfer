@@ -35,7 +35,8 @@ DS = loadDataset(dataset, local_env);
 %%%%%%% TRANSFER
 
 clearvars -except DS local_env
-load ~/Desktop/exp_results/awa/splme_new_awa_5574.mat
+% load ~/Desktop/exp_results/awa/splme_new_awa_5574.mat
+load ~/Desktop/exp_results/awa/splme_new_awa_5166.mat % without || . ||F
 dataset = 'awa';
 method = 'splme_new';
 local_env = 1;

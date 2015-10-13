@@ -24,7 +24,6 @@ for i=1:param.numClasses
 end
 
 
-
 %%-------- Draw prototypes
 class_labels = zeros(sum(param.numPrototypes), 1);
 protoStartIdx = [0; cumsum(param.numPrototypes)];

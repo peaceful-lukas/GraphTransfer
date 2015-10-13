@@ -65,7 +65,8 @@ function ds_dir = datasetRootDir(dataset)
 
 ds_dir = '';
 
-if     strcmp(dataset, 'awa'),                  ds_dir = '/v9/AwA/allclass/proc/';
+% if     strcmp(dataset, 'awa'),                  ds_dir = '/v9/AwA/allclass/proc/'; % pool5
+if     strcmp(dataset, 'awa'),                  ds_dir = '/v9/AwA/decaf_feats/'; % Decaf
 elseif strcmp(dataset, 'pascal3d_pascal'),      ds_dir = '/v9/PASCAL3D/pascal/proc/';
 elseif strcmp(dataset, 'voc'),                  ds_dir = '/v9/voc/proc/';
 elseif strcmp(dataset, 'AwA_official'),         ds_dir = '/v9/AwA/official/proc/';
@@ -80,7 +81,8 @@ function ds_dir_local = datasetDirLocal(dataset)
 
 ds_dir_local = '';
 
-if     strcmp(dataset, 'awa'),                  ds_dir_local = '/Users/lukas/Desktop/awa_lme_result/';
+% if     strcmp(dataset, 'awa'),                  ds_dir_local = '/Users/lukas/Desktop/awa_lme_result/'; % pool5 features
+if     strcmp(dataset, 'awa'),                  ds_dir_local = '/Users/lukas/Desktop/awa_decaf/'; % DeCAF
 elseif strcmp(dataset, 'pascal3d_pascal'),      ds_dir_local = '/Users/lukas/Desktop/pascal3d_pascal/';
 elseif strcmp(dataset, 'voc'),                  ds_dir_local = '/Users/lukas/Desktop/voc/';
 elseif strcmp(dataset, 'AwA_30_only'),          ds_dir_local = '/Users/lukas/Desktop/AwA_30_only/';
