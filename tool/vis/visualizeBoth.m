@@ -8,8 +8,9 @@ hold on;
 
 % Coordinate Projection
 if length(coord_idx) == 0
-    [~, coord_idx] = sort(sum(bsxfun(@minus, U, mean(U, 2)).^2, 2), 'descend');
+    [coord_scores, coord_idx] = sort(sum(bsxfun(@minus, U, mean(U, 2)).^2, 2), 'descend');
     coord_idx = coord_idx(1:3);
+    disp(coord_scores');
 end
 
 

@@ -3,7 +3,7 @@
 % init
 [U param] = initU(DS, param);
 W = randn(param.lowDim, param.featureDim);
-W = W/norm(W, 'fro');
+W = 2*W/norm(W, 'fro');
 
 
 n = 0;
@@ -39,8 +39,12 @@ while( n < param.maxAlter & iter_condition )
 
     n = n + 1;
 
-    coord_idx = visualizeBoth(DS, W, U, param, coord_idx, []);
-    drawnow;
+
+    if local_env && mod(n, 5) == 1
+        coord_idx = visualizeBoth(DS, W, U, param, [], []);
+        drawnow;
+        % pause;
+    end
 end
 
 W = highest_W;
