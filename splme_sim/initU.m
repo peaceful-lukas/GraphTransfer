@@ -1,5 +1,56 @@
 function [U0 classProtos param] = initU(DS, param)
 
+% clusterIndex = 1;
+
+% nearest_thrsh = 1.35;
+% min_examples_thrsh = 10;
+
+% c = 1
+% % for c=1:param.numClasses
+%     class_example_idx = find(DS.DL == c);
+%     numExamples = length(class_example_idx);
+%     X_c = DS.D(:, class_example_idx);
+    
+%     clusters = zeros(param.featureDim, numExamples);
+%     clust_assgn = zeros(numExamples, 1);
+%     numClusters = 0;
+
+%     missing_counter = 0;
+
+
+%     done = false;
+%     while ~done
+%         % randomly sample idx
+%         example = randi(numExamples);
+%         if clust_assgn(example) ~= 0
+%             fprintf('sample failed\n');
+%             continue;
+%         end
+
+%         x = X_c(:, example);
+%         [nearest_scores, nearest_idx] = sort(sum(bsxfun(@minus, X_c, x).^2, 1), 'ascend');
+%         nearest_examples = nearest_idx(find(nearest_scores < nearest_thrsh));
+        
+%         if length(nearest_examples) < min_examples_thrsh
+%             missing_counter = missing_counter + 1;
+%             fprintf('missing counter(%d)\n', missing_counter);
+%         else
+%             clust_assgn(nearest_examples) = clusterIndex;
+%             clusters(clusterIndex) = 
+%             clusterIndex = clusterIndex + 1;
+%             fprintf('cluster assigned\n');
+%         end
+
+%         if missing_counter > 20 || length(find(clust_assgn)) > 0.8*numExamples
+%             done = true;
+%         end
+%     end
+
+%     keyboard;
+% % end
+
+
+
 % dd-CRP clustering
 param.protoAssign = zeros(length(DS.DL), 1);
 param.numPrototypes = zeros(param.numClasses, 1);
@@ -17,7 +68,6 @@ for c = 1:param.numClasses
 
     a = 0;
     [ta, ~] = ddcrp(S, 'lgstc', alpha, a);
-    % [ta, ~] = sim_crp(S, 'lgstc', alpha, a);
 
     % prevent to catch outliers
     protoAssign = zeros(numData_c, 1);
@@ -63,9 +113,11 @@ end
 % ------ should be connected graphs. MUST BE CHECKED. -----------
 param.knnGraphs = constructKnnGraphs(classProtos, param);
 
-% [U0, ~, ~] = svd(classProtos');
-% U0 = U0(1:param.lowDim, :);
+% param.lowDim = sum(param.numPrototypes) - 1;
 [~, pca_score, ~] = pca(classProtos');
 U0 = pca_score(:, 1:param.lowDim)'; % approximate the original distributions of prototypes.
-U0 = U0/size(U, 2);
+% U0 = U0/norm(U0, 'fro');
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Whether to divide by Frobenius norm or not??
 

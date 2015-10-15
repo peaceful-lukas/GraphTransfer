@@ -6,9 +6,9 @@ param.maxAlter = 100;
 param.c_batchSize = 100;
 param.p_batchSize = 100;
 param.lowDim = 75;
-param.featureDim = 4096;
+% param.featureDim = 4096;
 % param.lowDim = 50;
-% param.featureDim = 9216;
+param.featureDim = 9216;
 
 param.knn_const = 3; % constant for constructing k-nn graph.
 

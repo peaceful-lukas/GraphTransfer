@@ -4,7 +4,7 @@ local_env = 1;
 addpath 'util/'
 addpath 'param/'
 addpath 'ddcrp/'
-addpath 'splme_dist/'
+addpath 'splme_sim/'
 addpath 'pgm/'
 addpath 'pgm/RRWM/'
 addpath 'transfer_splme_new/'
@@ -16,13 +16,13 @@ addpath 'tool/vis/distinguishable_colors/'
 
 dataset = 'voc';
 % dataset = 'awa';
-method = 'splme_dist';
+method = 'splme_sim';
 
 DS = loadDataset(dataset, local_env);
 param = setParameters(dataset, method);
 
-% [W U param] = splme_dist(DS, param, local_env);
-splme_dist;
+% [W U param] = splme_sim(DS, param, local_env);
+splme_sim;
 
 
 

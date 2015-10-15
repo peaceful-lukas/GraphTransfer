@@ -123,5 +123,5 @@ F = zeros(size(S, 1), size(S, 2));
 
 if strcmp(decayF, 'wnd')        F(find(S > a)) = 1;
 elseif strcmp(decayF, 'exp')    F = exp(a*S);
-elseif strcmp(decayF, 'lgstc')  F = exp(a*S)./(1 + exp(a*S);
+elseif strcmp(decayF, 'lgstc')  F = exp(S+a)./(1 + exp(S+a));
 end

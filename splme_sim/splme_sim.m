@@ -1,19 +1,11 @@
-% function [W U param] = splme_dist(DS, param, local_env)
+% function [W U param] = splme_sim(DS, param, local_env)
 
-% init U
+% init
 [U classProtos param] = initU(DS, param);
+W = randn(param.lowDim, param.featureDim);
+W = 2*W/norm(W, 'fro');
 
-% init W
-X = DS.D;
-projection_lambda = 1000000;
-J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
-J = sum(cat(3, J{:}), 3);
-W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
-visualizeBoth(DS, W, U, param, [], [])
-[~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
 
-load W
-load U
 n = 0;
 highest_acc = 0.5;
 highest_W = W;
