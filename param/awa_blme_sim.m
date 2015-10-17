@@ -3,7 +3,7 @@ param.maxIterW = 1000;
 param.maxIterU = 1000;
 param.maxAlter = 50;
 param.batchSize = 100;
-param.lowDim = 200;
+param.lowDim = 50;
 param.featureDim = 9216;
 
 param.lm = 10000; % large margin for classification
