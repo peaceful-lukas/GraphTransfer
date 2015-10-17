@@ -4,6 +4,7 @@ local_env = 1;
 addpath 'util/'
 addpath 'param/'
 addpath 'ddcrp/'
+addpath 'sc/'
 addpath 'splme_sim/'
 addpath 'pgm/'
 addpath 'pgm/RRWM/'

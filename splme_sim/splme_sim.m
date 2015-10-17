@@ -16,7 +16,13 @@ if local_env
 end
 
 [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
+W0 = W;
+U0 = U;
 
+
+
+W = W0;
+U = U0;
 
 n = 0;
 highest_acc = 0.5;
