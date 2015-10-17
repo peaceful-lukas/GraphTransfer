@@ -67,5 +67,5 @@ param.knnGraphs = constructKnnGraphs(classProtos, param);
 % U0 = U0(1:param.lowDim, :);
 [~, pca_score, ~] = pca(classProtos');
 U0 = pca_score(:, 1:param.lowDim)'; % approximate the original distributions of prototypes.
-U0 = U0/size(U, 2);
+% U0 = U0/size(U0, 2);
 

@@ -9,11 +9,10 @@ projection_lambda = 1000000;
 J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
 J = sum(cat(3, J{:}), 3);
 W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
-visualizeBoth(DS, W, U, param, [], [])
+visualizeBoth(DS, W, U, param, [], [], 'test');
 [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
+drawnow;
 
-load W
-load U
 n = 0;
 highest_acc = 0.5;
 highest_W = W;
@@ -49,7 +48,7 @@ while( n < param.maxAlter & iter_condition )
 
 
     if local_env && mod(n, 5) == 1
-        coord_idx = visualizeBoth(DS, W, U, param, [], []);
+        coord_idx = visualizeBoth(DS, W, U, param, [], [], 'test');
         drawnow;
         % pause;
     end

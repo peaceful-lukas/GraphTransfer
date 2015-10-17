@@ -13,7 +13,7 @@ while n <= param.maxIterU
     dU = computeGradient(DS, WX, U, cTriplets, pPairs, aux, param);
     U = update(U, dU, param);
 
-    if ~mod(n, dispCycle)
+    if ~mod(n, dispCycle) || n == 1
         timeElapsed = toc;
         fprintf('U%d) ', n);
         loss = sampleLoss(DS, W, U, param);

@@ -12,6 +12,10 @@ if strcmp(dataset, 'awa') || strcmp(dataset, 'AwA_30_only')
                 'buffalo', 'zebra', 'giant+panda', 'deer', 'bobcat', ...
                 'pig', 'lion', 'mouse', 'polar+bear', 'collie',  ...
                 'walrus', 'raccoon', 'cow', 'dolphin'};
+
+elseif strcmp(dataset, 'voc')
+    clsnames = {'aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', ...
+            'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor'};
     
 elseif strcmp(dataset, 'pascal3d_pascal') || strcmp(dataset, 'pascal3d_imagenet') || strcmp(dataset, 'pascal3d_all')
     clsnames = {'aeroplane', 'bicycle', 'boat', 'bottle', 'bus', 'car', 'chair', 'diningtable', 'motorbike', 'sofa', 'train', 'tvmonitor'};

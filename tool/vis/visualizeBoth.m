@@ -1,4 +1,20 @@
-function coord_idx = visualizeBoth(DS, W, U, param, coord_idx, special_prototypes)
+function coord_idx = visualizeBoth(DS, W, U, param, coord_idx, special_prototypes, datatype)
+
+if nargin < 6
+    datatype = 'train';
+end
+
+
+X = [];
+Y = [];
+if strcmp(datatype, 'train')
+    X = DS.D;
+    Y = DS.DL;
+elseif strcmp(datatype, 'test')
+    X = DS.T;
+    Y = DS.TL;
+end
+
 
 % init plotting
 f = figure;
@@ -16,11 +32,11 @@ end
 
 
 %%-------- Draw examples
-WX = W*DS.D;
+WX = W*X;
 WX = WX(coord_idx, :);
 
 for i=1:param.numClasses
-    exmplIdx = DS.DL == i;
+    exmplIdx = Y == i;
     plot3(WX(1, exmplIdx), WX(2, exmplIdx), WX(3, exmplIdx), '.', 'Color', colorList(i, :), 'MarkerSize', 5, 'DisplayName', classNames{i});
 end
 
