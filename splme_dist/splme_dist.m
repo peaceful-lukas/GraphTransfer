@@ -9,9 +9,15 @@ projection_lambda = 1000000;
 J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
 J = sum(cat(3, J{:}), 3);
 W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
-visualizeBoth(DS, W, U, param, [], [], 'test');
+
+if local_env
+    visualizeBoth(DS, W, U, param, [], [], 'test');
+    drawnow;
+end
+
 [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
-drawnow;
+
+
 
 n = 0;
 highest_acc = 0.5;
