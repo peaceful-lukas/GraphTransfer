@@ -1,27 +1,32 @@
 % function [W U param] = splme_sim(DS, param, local_env)
 
 % init U
-[U classProtos param] = initU(DS, param);
+% [U classProtos param] = initU(DS, param);
+k = 10;
+[classProtos, param] = spectralClustering(DS, param, k);
+[~, pca_score, ~] = pca(classProtos');
+U0 = pca_score(:, 1:param.lowDim)';
+
 
 % init W
-W = rand(param.lowDim, param.featureDim);
-W = W/norm(W, 'fro');
-% X = DS.D;
-% projection_lambda = 1000000;
-% J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
-% J = sum(cat(3, J{:}), 3);
-% W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
+X = DS.D;
+projection_lambda = 1000000;
+J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
+J = sum(cat(3, J{:}), 3);
+W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
 
-% if local_env
-%     visualizeBoth(DS, W, U, param, [], [], 'test');
-%     drawnow;
-% end
+if local_env
+    visualizeBoth(DS, W, U, param, [], [], 'test');
+    drawnow;
+end
 
 [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
+
 W0 = W;
 U0 = U;
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 W = W0;
 U = U0;
