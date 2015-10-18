@@ -3,9 +3,10 @@
 % init U
 % [U classProtos param] = initU(DS, param);
 k = 10;
-[classProtos, param] = spectralClustering(DS, param, k);
+% [classProtos, param] = spectralClustering(DS, param, k);
+[classProtos, param] = kmeansClustering(DS, param, k);
 [~, pca_score, ~] = pca(classProtos');
-U0 = pca_score(:, 1:param.lowDim)';
+U = pca_score(:, 1:param.lowDim)';
 
 
 % init W
@@ -21,6 +22,7 @@ if local_env
 end
 
 [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
+
 
 W0 = W;
 U0 = U;
