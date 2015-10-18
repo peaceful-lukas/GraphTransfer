@@ -4,7 +4,7 @@ numExamples = size(X, 2);
 A = zeros(numExamples, numExamples);
 
 if strcmp(method, 'splme_dist')
-    A = pdist(DS.D');
+    A = pdist(X');
     A = squareform(A);
     sigma = 1;
     A = A./max(max(A));

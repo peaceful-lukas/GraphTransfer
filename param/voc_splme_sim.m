@@ -8,8 +8,8 @@ param.lowDim = 100;
 param.featureDim = 9216;
 
 param.knn_const = 3; % constant for constructing k-nn graph.
-param.c_lm = 10000; % large margin for classification
-param.p_sigma = 30000; % large margin for structure preserving
+param.c_lm = 10; % large margin for classification
+param.p_sigma = 30; % large margin for structure preserving
 param.lambda_W = 1; % regularizer coefficient
 param.lambda_U = 0.001; % regularizer coefficient
 param.lr_W = 0.0001; % learning rate for W

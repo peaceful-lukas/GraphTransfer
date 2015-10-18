@@ -4,16 +4,17 @@
 [U classProtos param] = initU(DS, param);
 
 % init W
-X = DS.D;
-projection_lambda = 1000000;
-J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
-J = sum(cat(3, J{:}), 3);
-W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
+W = rand(param.lowDim, param.featureDim);
+% X = DS.D;
+% projection_lambda = 1000000;
+% J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
+% J = sum(cat(3, J{:}), 3);
+% W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
 
-if local_env
-    visualizeBoth(DS, W, U, param, [], [], 'test');
-    drawnow;
-end
+% if local_env
+%     visualizeBoth(DS, W, U, param, [], [], 'test');
+%     drawnow;
+% end
 
 [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
 

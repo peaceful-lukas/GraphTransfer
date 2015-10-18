@@ -1,56 +1,62 @@
 function [U0 classProtos param] = initU(DS, param)
 
 
+% param.protoAssign = zeros(length(DS.DL), 1);
+% param.numPrototypes = zeros(param.numClasses, 1);
+% classProtos = [];
+
+% % Spectral Clustering with k (= lowDim)
+% k = param.lowDim;
+
+% % graph Laplacian
+% X = DS.D;
+% A = calculateAffinityMatrix(param.method, X);
+% D = calculateDegreeMatrix(A);
+% NL = calculateNormalizedLaplacian(D, A);
+
+% % perform the eigen value decomposition & select k largest eigen vectors
+% [eigVectors, eigValues] = eig(NL);
+% eigX = eigVectors(:,end-(k-1):end);
+% neigX = eigX;%normr(eigX);
+
+% % perform kmeans clustering on the matrix U
+% [protoAssign, prototypes] = kmeans(neigX, k);
+% prototypes = prototypes';
+
+% % prototype class assignment
+% voting_k = 5; % knn-voting constant
+% prototypeClasses = zeros(k, 1);
+% for p=1:k
+%     proto = prototypes(:, p);
+%     dist_vec = sum(bsxfun(@minus, neigX', proto).^2);
+%     [~, nearest_idx] = sort(dist_vec, 'ascend');
+%     nearest_classes = DS.DL(nearest_idx(1:voting_k));
+%     prototypeClasses(p) = mode(nearest_classes);
+% end
+
+% U0 = [];
+% for classNum=1:param.numClasses
+%      protoIdx = find(prototypeClasses == classNum);
+%      U0 = [U0 prototypes(:, protoIdx)];
+%      param.numPrototypes(classNum) = length(protoIdx);
+% end
+
+% param.numPrototypes
+
+
+
+
+
 param.protoAssign = zeros(length(DS.DL), 1);
 param.numPrototypes = zeros(param.numClasses, 1);
 classProtos = [];
 
-% Spectral Clustering with k (= lowDim)
-k = param.lowDim;
-
-% graph Laplacian
-X = DS.D;
-A = calculateAffinityMatrix(param.method, X);
-D = calculateDegreeMatrix(A);
-NL = calculateNormalizedLaplacian(D, A);
-
-% perform the eigen value decomposition & select k largest eigen vectors
-[eigVectors, eigValues] = eig(NL);
-eigX = eigVectors(:,end-(k-1):end);
-neigX = eigX;%normr(eigX);
-
-% perform kmeans clustering on the matrix U
-[protoAssign, prototypes] = kmeans(neigX, k);
-prototypes = prototypes';
-
-% prototype class assignment
-voting_k = 5; % knn-voting constant
-prototypeClasses = zeros(k, 1);
-for p=1:k
-    proto = prototypes(:, p);
-    dist_vec = sum(bsxfun(@minus, neigX', proto).^2);
-    [~, nearest_idx] = sort(dist_vec, 'ascend');
-    nearest_classes = DS.DL(nearest_idx(1:voting_k));
-    prototypeClasses(p) = mode(nearest_classes);
-end
-
-U0 = [];
-for classNum=1:param.numClasses
-     protoIdx = find(prototypeClasses == classNum);
-     U0 = [U0 prototypes(:, protoIdx)];
-     param.numPrototypes(classNum) = length(protoIdx);
-end
-
-param.numPrototypes
-
-
-
-% classNum = 1;
+k = 10;
 for classNum=1:param.numClasses
     exampleIdx = find(DS.DL == classNum);
     X_c = DS.D(:, exampleIdx);
 
-    A_c = calculateAffinityMatrix(param.method, X_c, param);
+    A_c = calculateAffinityMatrix(param.method, X_c);
     D_c = calculateDegreeMatrix(A_c);
     NL_c = calculateNormalizedLaplacian(D_c, A_c);
 
@@ -61,11 +67,7 @@ for classNum=1:param.numClasses
     nEigVec = eigVectors(:,end-(k-1):end);
     
     % construct the normalized matrix U from the obtained eigen vectors
-    U_c = zeros(size(nEigVec));
-    for i=1:size(nEigVec,1)
-        n = sqrt(sum(nEigVec(i, :).^2));    
-        U_c(i, :) = nEigVec(i, :) ./ n; 
-    end
+    U_c = normr(nEigVec);
 
     % perform kmeans clustering on the matrix U
     [protoAssign, prototypes] = kmeans(U_c, k);
@@ -76,8 +78,31 @@ for classNum=1:param.numClasses
     param.protoAssign(exampleIdx) = protoAssign;
     param.numPrototypes(classNum) = k;
 
+
+    % uniqueProtoIdx = unique(protoAssign);
+    % for m=1:k
+    %     similarExampleIdx = find(protoAssign == uniqueProtoIdx(m));
+    %     sim_vec_m = nEigVec(similarExampleIdx, :)*prototypes(m, :)';
+    %     [~, sim_sorted_idx]= sort(sim_vec_m, 'descend');
+
+    %     imageIdx = exampleIdx(similarExampleIdx(sim_sorted_idx)); 
+
+    %     fig = figure;
+    %     set(fig, 'Position', [0, 700, 1300, 1000]);    
+    %     for i=1:min(9, length(similarExampleIdx))
+    %         subplot(3, 3, i);
+    %         imagesc(DS.DI{imageIdx(i)});
+    %         axis image;
+    %         axis off;
+    %     end
+
+    %     pause;
+    % end
+
     fprintf('class %d finished\n', classNum);
 end
+
+
 
 
 
@@ -147,7 +172,8 @@ end
 
 
 % % % ------ should be connected graphs. MUST BE CHECKED. -----------
-% param.knnGraphs = constructKnnGraphs(classProtos, param);
+param.knnGraphs = constructKnnGraphs(classProtos, param);
+U0 = rand(param.lowDim, sum(param.numPrototypes));
 
 % [~, pca_score, ~] = pca(classProtos');
 % U0 = pca_score(:, 1:param.lowDim)'; % approximate the original distributions of prototypes.
