@@ -1,6 +1,6 @@
 function [train_acc test_acc] = dispAccuracy(method, DS, W, U, param)
 
-    if strcmp(method, 'splme') || strcmp(method, 'splme_new') || strcmp(method, 'splme_sim')
+    if strcmp(method, 'splme') || strcmp(method, 'splme_new') || strcmp(method, 'splme_sim') || strcmp(method, 'splme_sim_const')
 
         cumNumProto = cumsum(param.numPrototypes);
         [~, classified_raw] = max(DS.D'*W'*U, [], 2);
@@ -27,7 +27,7 @@ function [train_acc test_acc] = dispAccuracy(method, DS, W, U, param)
     
         
         
-    elseif strcmp(method, 'splme_dist')
+    elseif strcmp(method, 'splme_dist') || strcmp(method, 'splme_dist_const')
         cumNumProto = cumsum(param.numPrototypes);
         D = arrayfun(@(p) sum((W*DS.D - repmat(U(:, p), 1, length(DS.DL))).^2, 1), 1:sum(param.numPrototypes), 'UniformOutput', false);
         D = cat(1, D{:});

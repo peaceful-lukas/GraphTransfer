@@ -51,29 +51,15 @@ else
     hold on;
     for i=1:param.numClasses
         protoIdx = class_labels == i;
-
         plot3(U_vis(1, protoIdx), U_vis(2, protoIdx), U_vis(3, protoIdx), '.', 'Color', colorList(i, :), 'MarkerSize', 20, 'DisplayName', classNames{i});
+        % drawlines(U, U_vis, class_labels, colorList, param, 3, i);
+        axis off
+        
     end
 
-    axis off
     legend('show', 'Location', 'SouthEast');
 
-    drawlines(U_vis, class_labels, colorList, param, 3);
+    drawlines(U, U_vis, class_labels, colorList, param, 3);
 
     hold off;
 end
-
-
-
-% mouseEventCallback(f);
-
-
-
-function mouseEventCallback(f)
-
-set (gcf, 'WindowButtonMotionFcn', @mouseMove);
-
-function mouseMove(object, eventdata)
-
-C = get(gca, 'CurrentPoint');
-title(gca, ['(X,Y) = (', num2str(C(1,1)), ', ',num2str(C(1,2)), ')']);

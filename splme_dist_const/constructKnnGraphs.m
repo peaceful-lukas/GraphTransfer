@@ -8,13 +8,13 @@ knn_const = param.knn_const;
 
 knnGraphs = {};
 
-% % centering
-% proto_offset = 0;
-% for c=1:numClasses
-%     P_c = P(:, proto_offset+1:proto_offset+numPrototypes(c));
-%     P(:, proto_offset+1:proto_offset+numPrototypes(c)) = bsxfun(@minus, P_c,  mean(P_c, 2));
-%     proto_offset = proto_offset + numPrototypes(c);
-% end
+% centering
+proto_offset = 0;
+for c=1:numClasses
+    P_c = P(:, proto_offset+1:proto_offset+numPrototypes(c));
+    P(:, proto_offset+1:proto_offset+numPrototypes(c)) = bsxfun(@minus, P_c,  mean(P_c, 2));
+    proto_offset = proto_offset + numPrototypes(c);
+end
 
 
 % generate knn graph

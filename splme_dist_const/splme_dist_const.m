@@ -1,9 +1,10 @@
-% function [W U param] = splme_dist(DS, param, local_env)
+% function [W U param] = splme_dist_const(DS, param, local_env)
 
 % init U
-k = param.num_clusters;
-% [classProtos, param] = kmeansClustering(DS, param, k);
-[classProtos, param] = spectralClustering(DS, param, k);
+% k = param.num_clusters;
+k = 10;
+[classProtos, param] = kmeansClustering(DS, param, k);
+% [classProtos, param] = spectralClustering(DS, param, k);
 [~, pca_score, ~] = pca(classProtos');
 U = pca_score(:, 1:param.lowDim)';
 

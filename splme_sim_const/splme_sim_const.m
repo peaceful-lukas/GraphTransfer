@@ -1,4 +1,4 @@
-% function [W U param] = splme_dist(DS, param, local_env)
+% function [W U param] = splme_sim_const(DS, param, local_env)
 
 % init U
 k = param.num_clusters;
@@ -7,12 +7,18 @@ k = param.num_clusters;
 [~, pca_score, ~] = pca(classProtos');
 U = pca_score(:, 1:param.lowDim)';
 
+
 % init W
 X = DS.D;
-projection_lambda = 100000000;
 J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
 J = sum(cat(3, J{:}), 3);
-W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
+W = J/100000000;
+
+% X = DS.D;
+% projection_lambda = 1000000;
+% J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
+% J = sum(cat(3, J{:}), 3);
+% W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
 
 if local_env
     visualizeBoth(DS, W, U, param, [], [], 'test');
@@ -22,6 +28,14 @@ end
 [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
 
 
+W0 = W;
+U0 = U;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+W = W0;
+U = U0;
 
 n = 0;
 highest_acc = 0.5;

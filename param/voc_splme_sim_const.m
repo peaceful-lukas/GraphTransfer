@@ -1,0 +1,24 @@
+param.numClasses = 20;
+param.maxIterW = 1000;
+param.maxIterU = 1000;
+param.maxAlter = 50;
+param.m_batchSize = 100;
+% param.c_batchSize = 100;
+param.p_batchSize = 100;
+param.lowDim = 100;
+param.featureDim = 9216;
+
+param.num_clusters = 10;
+param.knn_const = 3; % constant for constructing k-nn graph.
+param.m_lm = 10000; % large margin for membership constraints
+% param.c_lm = 10000; % large margin for classification constrains
+param.p_sigma = 10000; % pulling term
+param.g_sigma = 10000; % gathering term
+param.bal_m = 5;
+% param.bal_c = 5;
+param.bal_p = 1;
+param.bal_g = 5;
+param.lambda_W = 1; % regularizer coefficient
+param.lambda_U = 0.001; % regularizer coefficient
+param.lr_W = 0.0001; % learning rate for W
+param.lr_U = 0.0001; % learning rate for U

@@ -26,16 +26,16 @@ for classNum=1:param.numClasses
     U_c = normr(nEigVec);
 
     % perform kmeans clustering on the matrix U
-    [protoAssign, eigPototypes] = kmeans(U_c, k);
+    [protoAssign, eigPrototypes] = kmeans(U_c, k);
 
     % find the nearest examples from each prototype to set pseudo-prototypes
     prototypes = [];
-    for p=1:size(eigPototypes, 1)
+    for p=1:k
         similarExampleIdx = find(protoAssign == p);
-        sim_vec_m = nEigVec(similarExampleIdx, :)*eigPototypes(p, :)';
+        sim_vec_m = nEigVec(similarExampleIdx, :)*eigPrototypes(p, :)';
         [~, protoIdx]= max(sim_vec_m);
         
-        prototypes = [prototypes X_c(:, protoIdx)];
+        prototypes = [prototypes X_c(:, similarExampleIdx(protoIdx))];
     end
 
     classProtos = [classProtos prototypes];
@@ -50,8 +50,10 @@ for classNum=1:param.numClasses
         uniqueProtoIdx = unique(protoAssign);
         for m=1:k
             similarExampleIdx = find(protoAssign == uniqueProtoIdx(m));
-            sim_vec_m = nEigVec(similarExampleIdx, :)*prototypes(m, :)';
+            sim_vec_m = nEigVec(similarExampleIdx, :)*eigPrototypes(m, :)';
             [~, sim_sorted_idx]= sort(sim_vec_m, 'descend');
+
+            % sim_sorted_idx = sim_sorted_idx(randperm(length(sim_vec_m)));
 
             imageIdx = exampleIdx(similarExampleIdx(sim_sorted_idx)); 
 
