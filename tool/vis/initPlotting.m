@@ -3,7 +3,7 @@ function [classNames, colorList] = initPlotting(param)
 if strcmp(param.dataset, 'pascal3d_pascal')
     classNames = {'aeroplane', 'bicycle', 'boat', 'bottle', 'bus', 'car', 'chair', 'dtable', 'motorbike', 'sofa', 'train', 'tv'};
 
-elseif strcmp(param.dataset, 'voc')
+elseif strcmp(param.dataset, 'voc') || strcmp(param.dataset, 'voc_pca500')
     classNames = {'aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', ...
             'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor'};
 

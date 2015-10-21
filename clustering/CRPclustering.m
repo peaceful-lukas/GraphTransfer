@@ -10,8 +10,8 @@ for c = 1:param.numClasses
     D = D./max(max(D));
     
     numData_c = size(X_c, 2);
-    % alpha = numData_c * 0.01;
-    alpha = numData_c * 0.1;
+    % alpha = numData_c * 0.01; % overfit
+    alpha = numData_c * 0.1; % better
     a = mean(mean(D));
     [ta, ~] = ddcrp(D, 'lgstc', alpha, a);
 
@@ -23,7 +23,7 @@ for c = 1:param.numClasses
     
     for p=1:length(clust)
         
-        if length(find(ta == p)) < 1 % outliers
+        if length(find(ta == p)) < 10 % outliers
         % if length(find(ta == p)) < 3 % outliers
             protoAssign(find(ta == p)) = -1;
             numOutliers = numOutliers + 1;

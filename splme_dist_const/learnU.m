@@ -34,6 +34,9 @@ U = U - param.lr_U * dU;
 % gradient computation
 function dU = computeGradient(DS, WX, U, cTriplets, pPairs, aux, param)
 
+sTriplets = validStructurePreservingTriplets(U, param);
+
+num_sTriplets = size(sTriplets, 1);
 num_cTriplets = size(cTriplets, 1);
 num_pPairs = size(pPairs, 1);
 
@@ -53,8 +56,30 @@ if num_pPairs > 0
     p_dU = 2*p_dU/param.p_batchSize;
 end
 
-bal_c = param.bal_c/(param.bal_c + param.bal_p);
-bal_p = param.bal_p/(param.bal_c + param.bal_p);
+s_dU = zeros(size(U));
+if num_sTriplets > 0
+    s1 = -2*(U(:, sTriplets(:, 2)) - U(:, sTriplets(:, 3)))*aux(:, sTriplets(:, 1))';
+    s2 = -2*(U(:, sTriplets(:, 1)) - U(:, sTriplets(:, 2)))*aux(:, sTriplets(:, 2))';
+    s3 = -2*(U(:, sTriplets(:, 1)) - U(:, sTriplets(:, 3)))*aux(:, sTriplets(:, 3))';
+    s_dU = s1 + s2 + s3;
+    s_dU = s_dU/size(U, 2);
+    s_dU = s_dU/param.s_batchSize;
+end
 
-dU = bal_c*c_dU + bal_p*p_dU + param.lambda_U*U/size(U, 2);
+
+
+bal_c = param.bal_c/(param.bal_c + param.bal_p + param.bal_s);
+bal_p = param.bal_p/(param.bal_c + param.bal_p + param.bal_s);
+bal_s = param.bal_s/(param.bal_c + param.bal_p + param.bal_s);
+
+dU = bal_c*c_dU + bal_p*p_dU + bal_s*s_dU + param.lambda_U*U/size(U, 2);
+
+
+
+
+
+
+
+
+
 

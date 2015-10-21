@@ -3,17 +3,40 @@
 % init U
 % k = param.num_clusters;
 k = 10;
-[classProtos, param] = kmeansClustering(DS, param, k);
-% [classProtos, param] = spectralClustering(DS, param, k);
+% [classProtos, param] = CRPclustering(DS, param);
+% [classProtos, param] = kmeansClustering(DS, param, k);
+[classProtos, param] = spectralClustering(DS, param, k);
+
+[sTriplets knnGraphs] = generateStructurePreservingTriplets(classProtos, param);
+param.sTriplets = sTriplets;
+param.knnGraphs = knnGraphs;
+
 [~, pca_score, ~] = pca(classProtos');
 U = pca_score(:, 1:param.lowDim)';
 
+
 % init W
-X = DS.D;
-projection_lambda = 100000000;
-J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
-J = sum(cat(3, J{:}), 3);
-W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
+% X = DS.D;
+% projection_lambda = 1000000;
+% J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
+% J = sum(cat(3, J{:}), 3);
+% W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
+
+W = randn(param.lowDim, param.featureDim);
+
+
+% initialize U with || Wx - u ||
+% U = [];
+% for i=1:size(U, 2)
+%     exampleIdx = find(param.protoAssign == i);
+%     WX = sum(W*DS.D(:, exampleIdx), 2);
+%     u = WX/length(exampleIdx);
+%     U = [U u];
+% end
+% [~, pca_score, ~] = pca(classProtos');
+% U = pca_score(:, 1:param.lowDim)';
+
+
 
 if local_env
     visualizeBoth(DS, W, U, param, [], [], 'test');
@@ -57,9 +80,9 @@ while( n < param.maxAlter & iter_condition )
 
     n = n + 1;
 
-
     if local_env && mod(n, 5) == 1
-        coord_idx = visualizeBoth(DS, W, U, param, [], [], 'test');
+        % coord_idx = visualizeBoth(DS, W, U, param, [], [], 'test');
+        visualizePrototypes(U, param, [], []);
         drawnow;
         % pause;
     end

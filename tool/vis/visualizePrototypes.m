@@ -54,7 +54,13 @@ else
         plot3(U_vis(1, protoIdx), U_vis(2, protoIdx), U_vis(3, protoIdx), '.', 'Color', colorList(i, :), 'MarkerSize', 20, 'DisplayName', classNames{i});
         % drawlines(U, U_vis, class_labels, colorList, param, 3, i);
         axis off
-        
+% keyboard;
+        %
+        for j=1:length(find(protoIdx))
+            numAssigns = length(find(param.protoAssign == protoStartIdx(i)+j));
+            text(U_vis(1, protoStartIdx(i)+j), U_vis(2, protoStartIdx(i)+j), U_vis(3, protoStartIdx(i)+j), sprintf('%d', numAssigns));
+        end
+        %
     end
 
     legend('show', 'Location', 'SouthEast');
