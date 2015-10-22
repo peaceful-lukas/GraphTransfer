@@ -12,6 +12,7 @@ param.num_clusters = 10;
 param.knn_const = 3; % constant for constructing k-nn graph.
 param.c_lm = 10; % large margin for classification
 param.p_sigma = 1000;  % pulling term
+param.p_lm = 1;
 param.s_lm = 1; % large margin for structure preserving
 
 param.lambda_W = 0.1; % regularizer coefficient

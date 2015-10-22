@@ -1,8 +1,7 @@
 % function [W U param] = splme_dist_const(DS, param, local_env)
 
 % init U
-% k = param.num_clusters;
-k = 10;
+k = param.num_clusters;
 % [classProtos, param] = CRPclustering(DS, param);
 % [classProtos, param] = kmeansClustering(DS, param, k);
 [classProtos, param] = spectralClustering(DS, param, k);
@@ -15,32 +14,30 @@ U = pca_score(:, 1:param.lowDim)';
 
 
 % init W
-% X = DS.D;
-% projection_lambda = 1000000;
-% J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
-% J = sum(cat(3, J{:}), 3);
-% W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
+X = DS.D;
+projection_lambda = 1000000;
+J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
+J = sum(cat(3, J{:}), 3);
+W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
 
-W = randn(param.lowDim, param.featureDim);
+% W = randn(param.lowDim, param.featureDim);
 
 
 % initialize U with || Wx - u ||
 U = [];
-for i=1:size(U, 2)
+for i=1:sum(param.numPrototypes)
     exampleIdx = find(param.protoAssign == i);
     WX = sum(W*DS.D(:, exampleIdx), 2);
     u = WX/length(exampleIdx);
     U = [U u];
 end
-[~, pca_score, ~] = pca(classProtos');
-U = pca_score(:, 1:param.lowDim)';
 
 
 
-% if local_env
-%     visualizeBoth(DS, W, U, param, [], [], 'test');
-%     drawnow;
-% end
+if local_env
+    visualizeBoth(DS, W, U, param, [], [], 'test');
+    drawnow;
+end
 
 % [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
 

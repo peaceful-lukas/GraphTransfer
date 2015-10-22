@@ -5,9 +5,9 @@ X = DS.D;
 offset_vec = [0; cumsum(param.numPrototypes)];
 
 i_vec = randi(numel(DS.DL), param.c_batchSize, 1);
-yi_vec = param.protoAssign(i_vec);
-% yi_class_vec = DS.DL(i_vec);
-% yi_vec = offset_vec(yi_class_vec) + randi(param.num_clusters, length(yi_class_vec), 1);
+% yi_vec = param.protoAssign(i_vec);
+yi_class_vec = DS.DL(i_vec);
+yi_vec = offset_vec(yi_class_vec) + randi(param.num_clusters, length(yi_class_vec), 1);
 
 
 class_vec = randi(param.numClasses, length(i_vec), 1);

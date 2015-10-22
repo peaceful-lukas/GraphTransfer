@@ -9,8 +9,10 @@ n = 1;
 tic;
 while n <= param.maxIterU
     cTriplets = sampleClassificationTriplets(DS, W, U, param);
-    pPairs = samplePullingPairs(DS, W, U, param);
-    dU = computeGradient(DS, WX, U, cTriplets, pPairs, aux, param);
+    % pPairs = samplePullingPairs(DS, W, U, param);
+    pTriplets = samplePullingTriplets(DS, W, U, param);
+    % dU = computeGradient(DS, WX, U, cTriplets, pPairs, aux, param);
+    dU = computeGradient(DS, WX, U, cTriplets, pTriplets, aux, param);
     U = update(U, dU, param);
 
     if ~mod(n, dispCycle) || n == 1
@@ -32,13 +34,15 @@ U = U - param.lr_U * dU;
 
 
 % gradient computation
-function dU = computeGradient(DS, WX, U, cTriplets, pPairs, aux, param)
+% function dU = computeGradient(DS, WX, U, cTriplets, pPairs, aux, param)
+function dU = computeGradient(DS, WX, U, cTriplets, pTriplets, aux, param)
 
 sTriplets = validStructurePreservingTriplets(U, param);
 
 num_sTriplets = size(sTriplets, 1);
 num_cTriplets = size(cTriplets, 1);
-num_pPairs = size(pPairs, 1);
+% num_pPairs = size(pPairs, 1);
+num_pTriplets = size(pTriplets);
 
 c_dU = zeros(size(U));
 if num_cTriplets > 0
@@ -50,9 +54,19 @@ if num_cTriplets > 0
     c_dU = c_dU/param.c_batchSize; % normalize by the number of samples for SGD
 end
 
+% p_dU = zeros(size(U));
+% if num_pPairs > 0
+%     p_dU = (U(:, pPairs(:, 2)) - WX(:, pPairs(:, 1)))*aux(:, pPairs(:, 2))';
+%     p_dU = p_dU/size(U, 2); % normalize by the number of prototypes
+%     p_dU = bsxfun(@rdivide, p_dU, repelem(param.numInstancesPerClass', param.numPrototypes));
+%     p_dU = 2*p_dU/param.p_batchSize; % normalize by the number of samples for SGD
+% end
+
 p_dU = zeros(size(U));
-if num_pPairs > 0
-    p_dU = (U(:, pPairs(:, 2)) - WX(:, pPairs(:, 1)))*aux(:, pPairs(:, 2))';
+if num_pTriplets > 0
+    p1 = (U(:, pTriplets(:, 2)) - WX(:, pTriplets(:, 1)))*aux(:, pTriplets(:, 2))';
+    p2 = -(U(:, pTriplets(:, 3)) - WX(:, pTriplets(:, 1)))*aux(:, pTriplets(:, 3))';
+    p_dU = p1 + p2;
     p_dU = p_dU/size(U, 2); % normalize by the number of prototypes
     p_dU = bsxfun(@rdivide, p_dU, repelem(param.numInstancesPerClass', param.numPrototypes));
     p_dU = 2*p_dU/param.p_batchSize; % normalize by the number of samples for SGD

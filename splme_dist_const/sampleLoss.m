@@ -2,11 +2,13 @@ function loss = sampleLoss(DS, W, U, param)
 
 X = DS.D;
 cTriplets = sampleClassificationTriplets(DS, W, U, param);
-pPairs = samplePullingPairs(DS, W, U, param);
+% pPairs = samplePullingPairs(DS, W, U, param);
+pTriplets = samplePullingTriplets(DS, W, U, param);
 sTriplets = validStructurePreservingTriplets(U, param);
 
 num_cTriplets = size(cTriplets, 1);
-num_pPairs = size(pPairs, 1);
+% num_pPairs = size(pPairs, 1);
+num_pTriplets = size(pTriplets, 1);
 num_sTriplets = size(sTriplets, 1);
 
 
@@ -24,10 +26,22 @@ if num_cTriplets > 0
 end
 cErr = cErr/param.c_batchSize;
 
+% pErr = 0;
+% num_pV = 0;
+% if num_pPairs > 0
+%     pErr_vec = sum((W*X(:, pPairs(:, 1)) - U(:, pPairs(:, 2))).^2, 1) - param.p_sigma;
+%     viol = find(pErr_vec > 0);
+%     num_pV = length(viol);
+%     if viol > 0
+%         pErr = sum(pErr_vec(viol));
+%     end
+% end
+% pErr = pErr/param.p_batchSize;
+
 pErr = 0;
 num_pV = 0;
-if num_pPairs > 0
-    pErr_vec = sum((W*X(:, pPairs(:, 1)) - U(:, pPairs(:, 2))).^2, 1) - param.p_sigma;
+if num_pTriplets > 0
+    pErr_vec = param.p_lm + sum((W*X(:, pTriplets(:, 1)) - U(:, pTriplets(:, 2))).^2, 1) - sum((W*X(:, pTriplets(:, 1)) - U(:, pTriplets(:, 3))).^2, 1);
     viol = find(pErr_vec > 0);
     num_pV = length(viol);
     if viol > 0
