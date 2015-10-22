@@ -41,7 +41,7 @@ if length(special_prototypes) > 0
     axis off
     legend('show', 'Location', 'SouthEast');
 
-    drawlines(U_vis, class_labels, colorList, param, 3);
+    drawlines(U, U_vis, class_labels, colorList, param, 3);
     hold off;
 
 else

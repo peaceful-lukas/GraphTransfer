@@ -47,7 +47,7 @@ if num_sTriplets > 0
         sErr = sum(sErr_vec(viol));
     end
 end
-sErr = sErr/param.s_batchSize;
+sErr = sErr/size(param.sTriplets, 1);
 
 bal_c = param.bal_c/(param.bal_c + param.bal_p + param.bal_s);
 bal_p = param.bal_p/(param.bal_c + param.bal_p + param.bal_s);

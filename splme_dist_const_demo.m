@@ -15,13 +15,14 @@ addpath 'transfer_splme_dist/util/'
 addpath 'tool/vis/'
 addpath 'tool/vis/distinguishable_colors/'
 
-% dataset = 'voc_pca500';
-dataset = 'voc';
+dataset = 'voc_pca500';
+% dataset = 'voc';
 % dataset = 'awa';
 method = 'splme_dist_const';
 
 DS = loadDataset(dataset, local_env);
 param = setParameters(dataset, method);
+param.numInstancesPerClass = hist(DS.DL, 20)';
 
 % reducedDim = 500;
 % [DS param] = featDimReduction(DS, param, reducedDim);
