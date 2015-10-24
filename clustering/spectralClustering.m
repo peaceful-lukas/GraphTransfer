@@ -57,19 +57,19 @@ for classNum=1:param.numClasses
 
             imageIdx = exampleIdx(similarExampleIdx(sim_sorted_idx)); 
 
-            fig = figure;
-            set(fig, 'Position', [0, 700, 1300, 1000]);    
+            f = figure('Visible', 'off');
+            set(f, 'Position', [0, 700, 1300, 1000]);    
             for i=1:min(9, length(similarExampleIdx))
                 subplot(3, 3, i);
                 imagesc(DS.DI{imageIdx(i)});
                 axis image;
                 axis off;
             end
-
-            pause;
+            saveas(f, ['/Users/lukas/Desktop/meeting_fig/awa_pca500_' num2str(classNum) '_' num2str(m) '.jpg']);
+            % pause;
         end
     end
 end
 
-param.knnGraphs = constructKnnGraphs(classProtos, param);
+param.nnGraphs = constructNNGraphs(classProtos, param);
 

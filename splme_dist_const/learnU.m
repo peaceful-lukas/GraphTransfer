@@ -37,12 +37,21 @@ U = U - param.lr_U * dU;
 % function dU = computeGradient(DS, WX, U, cTriplets, pPairs, aux, param)
 function dU = computeGradient(DS, WX, U, cTriplets, pTriplets, aux, param)
 
-sTriplets = validStructurePreservingTriplets(U, param);
+% sTriplets = validStructurePreservingTriplets(U, param);
+% [sPairs totalNum_sPairs] = validStructurePreservingUnaryPairs(U, param);
 
-num_sTriplets = size(sTriplets, 1);
+
+[spLPairs total_num_spLViol] = validStructurePreservingLboundPairs(U, param);
+[spUPairs total_num_spUViol] = validStructurePreservingUboundPairs(U, param);
+
 num_cTriplets = size(cTriplets, 1);
 % num_pPairs = size(pPairs, 1);
 num_pTriplets = size(pTriplets);
+% num_sTriplets = size(sTriplets, 1);
+% num_sPairs = size(sPairs, 1);
+num_spLPairs = size(spLPairs, 1);
+num_spUPairs = size(spUPairs, 1);
+
 
 c_dU = zeros(size(U));
 if num_cTriplets > 0
@@ -72,30 +81,61 @@ if num_pTriplets > 0
     p_dU = 2*p_dU/param.p_batchSize; % normalize by the number of samples for SGD
 end
 
-s_dU = zeros(size(U));
-if num_sTriplets > 0
-    s1 = -2*(U(:, sTriplets(:, 2)) - U(:, sTriplets(:, 3)))*aux(:, sTriplets(:, 1))';
-    s2 = -2*(U(:, sTriplets(:, 1)) - U(:, sTriplets(:, 2)))*aux(:, sTriplets(:, 2))';
-    s3 = -2*(U(:, sTriplets(:, 1)) - U(:, sTriplets(:, 3)))*aux(:, sTriplets(:, 3))';
+% sTriplets
+% s_dU = zeros(size(U));
+% if num_sTriplets > 0
+%     s1 = -2*(U(:, sTriplets(:, 2)) - U(:, sTriplets(:, 3)))*aux(:, sTriplets(:, 1))';
+%     s2 = -2*(U(:, sTriplets(:, 1)) - U(:, sTriplets(:, 2)))*aux(:, sTriplets(:, 2))';
+%     s3 = -2*(U(:, sTriplets(:, 1)) - U(:, sTriplets(:, 3)))*aux(:, sTriplets(:, 3))';
 
-    s_dU = s1 + s2 + s3;
-    s_dU = s_dU/size(U, 2); % normalize by the number of prototypes
-    s_dU = s_dU/size(param.sTriplets, 1); % normalize by the number of samples for SGD
+%     s_dU = s1 + s2 + s3;
+%     s_dU = s_dU/size(U, 2); % normalize by the number of prototypes
+%     s_dU = s_dU/size(param.sTriplets, 1); % normalize by the number of samples for SGD
+% end
+
+% % sPairs
+% sp_dU = zeros(size(U));
+% if num_sPairs > 0
+%     sp1 = 2*(U(:, sPairs(:, 1)) - U(:, sPairs(:, 2)))*aux(:, sPairs(:, 1))';
+%     sp2 = 2*(U(:, sPairs(:, 2)) - U(:, sPairs(:, 1)))*aux(:, sPairs(:, 2))';
+
+%     sp_dU = sp1 + sp2;
+%     sp_dU = sp_dU/size(U, 2);
+%     sp_dU = sp_dU/totalNum_sPairs;
+% end
+
+
+
+% neighbors ( should be close )
+spU_dU = zeros(size(U));
+if num_spUPairs > 0
+    spU1 = 2*(U(:, spUPairs(:, 1)) - U(:, spUPairs(:, 2)))*aux(:, spUPairs(:, 1))';
+    spU2 = 2*(U(:, spUPairs(:, 2)) - U(:, spUPairs(:, 1)))*aux(:, spUPairs(:, 2))';
+
+    spU_dU = spU1 + spU2;
+    spU_dU = spU_dU/size(U, 2);
+    spU_dU = spU_dU/total_num_spLViol;
 end
+
+
+% non-neighbors ( should be distant )
+spL_dU = zeros(size(U));
+if num_spLPairs > 0
+    spL1 = -2*(U(:, spLPairs(:, 1)) - U(:, spLPairs(:, 2)))*aux(:, spLPairs(:, 1))';
+    spL2 = -2*(U(:, spLPairs(:, 2)) - U(:, spLPairs(:, 1)))*aux(:, spLPairs(:, 2))';
+
+    spL_dU = spL1 + spL2;
+    spL_dU = spL_dU/size(U, 2);
+    spL_dU = spL_dU/total_num_spLViol;
+end
+
+
 
 
 bal_c = param.bal_c/(param.bal_c + param.bal_p + param.bal_s);
 bal_p = param.bal_p/(param.bal_c + param.bal_p + param.bal_s);
 bal_s = param.bal_s/(param.bal_c + param.bal_p + param.bal_s);
 
-dU = bal_c*c_dU + bal_p*p_dU + bal_s*s_dU + param.lambda_U*U/size(U, 2);
-
-
-
-
-
-
-
-
+dU = bal_c*c_dU + bal_p*p_dU + bal_s*spL_dU + bal_s*spU_dU + param.lambda_U*U/size(U, 2);
 
 

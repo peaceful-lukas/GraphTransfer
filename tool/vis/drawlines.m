@@ -9,7 +9,7 @@ for i=1:param.numClasses
     % 
     % POINTS = U(:, target);
     
-    adjGraph = triu(param.knnGraphs{i});
+    adjGraph = triu(param.nnGraphs{i});
     [p1 p2] = find(adjGraph);
     pairs = [p1 p2];
 

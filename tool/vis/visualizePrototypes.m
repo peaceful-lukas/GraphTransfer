@@ -12,8 +12,15 @@ end
 if length(coord_idx) == 0
     [coord_scores, coord_idx] = sort(sum(bsxfun(@minus, U, mean(U, 2)).^2, 2), 'descend');
     coord_idx = coord_idx(1:3);
-    disp(coord_scores');
+    % disp(coord_scores');
 end
+
+% PCA
+% disp('pca!!');
+% [~, pca_score, ~] = pca(U');
+% U = pca_score(:, 1:3)';
+% coord_idx = 1:3;
+
 
 if length(special_prototypes) > 0
     classNum = length(find(special_prototypes(1) > [0; cumsum(param.numPrototypes)]));
