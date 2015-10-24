@@ -1,5 +1,5 @@
 
-local_env = 1;
+local_env = 0;
 
 addpath 'util/'
 addpath 'param/'
