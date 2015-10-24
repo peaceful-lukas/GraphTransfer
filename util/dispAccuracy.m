@@ -27,7 +27,7 @@ function [train_acc test_acc] = dispAccuracy(method, DS, W, U, param)
     
         
         
-    elseif strcmp(method, 'splme_dist') || strcmp(method, 'splme_dist_const') || strcmp(method, 'spcl')
+    elseif strcmp(method, 'splme_dist') || strcmp(method, 'splme_dist_const') || strcmp(method, 'spcl') || strcmp(method, 'splme_cvpr')
         cumNumProto = cumsum(param.numPrototypes);
         D = arrayfun(@(p) sum((W*DS.D - repmat(U(:, p), 1, length(DS.DL))).^2, 1), 1:sum(param.numPrototypes), 'UniformOutput', false);
         D = cat(1, D{:});

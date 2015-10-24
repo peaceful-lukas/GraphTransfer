@@ -3,7 +3,7 @@ function A = calculateAffinityMatrix(method, X)
 numExamples = size(X, 2);
 A = zeros(numExamples, numExamples);
 
-if strcmp(method, 'splme_dist') || strcmp(method, 'splme_dist_const') || strcmp(method, 'spcl')
+if strcmp(method, 'splme_dist') || strcmp(method, 'splme_dist_const') || strcmp(method, 'spcl') || strcmp(method, 'splme_cvpr')
     A = pdist(X');
     A = squareform(A);
     sigma = 1;

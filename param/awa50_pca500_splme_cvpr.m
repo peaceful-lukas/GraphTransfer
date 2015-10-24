@@ -8,20 +8,22 @@ param.featureDim = 500;
 
 param.num_clusters = 10;
 
-param.cl_same_batchSize = 100;
-param.cl_diff_batchSize = 100;
+% batchSize
+param.c_batchSize = 100;
+param.m_batchSize = 100;
+param.s_batchSize = 100;
 
 param.lr_W = 0.001; % learning rate for W
 param.lr_U = 1; % learning rate for U
 param.lambda_W = 1000; % regularizer coefficient
 param.lambda_U = 1; % regularizer coefficient
 
-param.cl_same_bound = 10;
-param.cl_diff_bound = 100;
-param.sp_near_bound = 0.1;
-param.sp_dist_bound = 1;
+% large margins
+param.c_lm = 10;
+param.m_lm = 10;
 
-param.bal_cl = 0.0001;
-param.bal_sp = 1-param.bal_cl;
+param.bal_c = 0.5;
+param.bal_m = 0.3
+param.bal_s = 0.2;
 
 
