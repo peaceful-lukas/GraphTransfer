@@ -16,7 +16,7 @@ while n <= param.maxIterW
         loss = sampleLoss(DS, W, U, param);
         fprintf('avg time: %f\n', timeElapsed/dispCycle);
 
-        tic;
+        
     end
 
     n = n + 1;

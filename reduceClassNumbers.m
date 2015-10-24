@@ -1,4 +1,3 @@
-reducedNumClasses = 5;
 targetClasses = 1:10;
 
 

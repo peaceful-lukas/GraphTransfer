@@ -1,4 +1,4 @@
-local_env = 1;
+local_env = 0;
 if ~local_env, cd '/v9/code/GraphTransfer/'; end
 
 addpath 'util/'

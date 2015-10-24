@@ -8,32 +8,33 @@ U = pca_score(:, 1:param.lowDim)';
 
 
 % initialize W with ridge regression
-tic
-X = DS.D;
-projection_lambda = 100000000;
-J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
-J = sum(cat(3, J{:}), 3);
-W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
-toc
+% tic
+% X = DS.D;
+% projection_lambda = 100000000;
+% J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
+% J = sum(cat(3, J{:}), 3);
+% W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
+% toc
+W = randn(param.lowDim, param.featureDim);
 
 % re-initialize U by taking mean vectors of WX_c
-U = [];
-for i=1:sum(param.numPrototypes)
-    exampleIdx = find(param.protoAssign == i);
-    WX = sum(W*DS.D(:, exampleIdx), 2);
-    u = WX/length(exampleIdx);
-    U = [U u];
-end
+% U = [];
+% for i=1:sum(param.numPrototypes)
+%     exampleIdx = find(param.protoAssign == i);
+%     WX = sum(W*DS.D(:, exampleIdx), 2);
+%     u = WX/length(exampleIdx);
+%     U = [U u];
+% end
 
 fprintf('Before Training...\n');
 [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
 
 % visualize data distribution / class prototypes
-% if local_env
-%     visualizeBoth(DS, W, U, param, [], [], 'train');
-%     visualizePrototypes(U, param, [], []);
-%     drawnow;
-% end
+if local_env
+    visualizeBoth(DS, W, U, param, [], [], 'train');
+    visualizePrototypes(U, param, [], []);
+    drawnow;
+end
 
 
 
@@ -67,9 +68,9 @@ while( n < param.maxAlter & iter_condition )
 
     n = n + 1;
 
-    % if local_env && mod(n, 5) == 1
-    %     % coord_idx = visualizeBoth(DS, W, U, param, [], [], 'train');
-    %     coord_idx = visualizePrototypes(U, param, [], []);
-    %     drawnow;
-    % end
+    if local_env && mod(n, 5) == 1
+        % coord_idx = visualizeBoth(DS, W, U, param, [], [], 'train');
+        coord_idx = visualizePrototypes(U, param, [], []);
+        drawnow;
+    end
 end
