@@ -27,6 +27,7 @@ end
 function U = update(U, dU, param)
 
 U = U - param.lr_U * dU;
+% U = normc(U);
 
 
 
@@ -38,10 +39,12 @@ X = DS.D;
 cTriplets = sampleClassificationTriplets(DS, W, U, param);
 mTriplets = sampleMembershipTriplets(DS, W, U, param);
 [sTriplets total_num_sTriplets] = sampleStructurePreservingTriplets(U, param);
+[sPairs total_num_sPairs] = sampleStructurePreservingUnaryPairs(U, param);
 
 num_cTriplets = size(cTriplets, 1);
 num_mTriplets = size(mTriplets, 1);
 num_sTriplets = size(sTriplets, 1);
+num_sPairs = size(sPairs, 1);
 
 c_dU = zeros(size(U));
 if num_cTriplets > 0
@@ -71,6 +74,23 @@ if num_sTriplets > 0
     s_dU = s_dU/total_num_sTriplets; % normalize by the number of samples for SGD
 end
 
+sp_dU = zeros(size(U));
+if num_sPairs > 0
+    sp1 = -2*(U(:, sPairs(:, 1)) - U(:, sPairs(:, 2)))*aux(:, sPairs(:, 1))';
+    sp2 = -2*(U(:, sPairs(:, 2)) - U(:, sPairs(:, 1)))*aux(:, sPairs(:, 2))';
 
-dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*s_dU + param.lambda_U*U;
+    sp_dU = sp1 + sp2;
+    sp_dU = sp_dU/total_num_sPairs;
+end
+
+
+dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*(s_dU + sp_dU) + param.lambda_U*U;
+% dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*s_dU + param.lambda_U*U;
 dU = dU/size(U, 2);
+
+
+
+
+
+
+

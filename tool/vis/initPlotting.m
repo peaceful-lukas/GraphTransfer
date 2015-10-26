@@ -18,6 +18,10 @@ elseif strcmp(param.dataset, 'awa') || strcmp(param.dataset, 'AwA_30_only') || s
                 'buffalo', 'zebra', 'giant+panda', 'deer', 'bobcat', ...
                 'pig', 'lion', 'mouse', 'polar+bear', 'collie',  ...
                 'walrus', 'raccoon', 'cow', 'dolphin'};
+
+elseif strcmp(param.dataset, 'awa10_pca500')
+    classNames = {'antelope', 'grizzly+bear', 'killer+whale', 'beaver', 'dalmatian', ...
+                'persian+cat', 'horse', 'german+shepherd', 'blue+whale', 'siamese+cat'};
 end
 
 colorList = distinguishable_colors(param.numClasses);

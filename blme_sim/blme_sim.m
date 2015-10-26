@@ -10,17 +10,18 @@ pca_score = [pca_score ones(param.lowDim, 1)];
 U = pca_score(:, 1:param.lowDim)';
 
 
-X = DS.D;
-projection_lambda = 1000000;
-J = arrayfun(@(p) repmat(U(:, p), 1, length(find(DS.DL == p)))*X(:, find(DS.DL == p))', 1:size(U, 2), 'UniformOutput', false);
-J = sum(cat(3, J{:}), 3);
-W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
+% X = DS.D;
+% projection_lambda = 1000000;
+% J = arrayfun(@(p) repmat(U(:, p), 1, length(find(DS.DL == p)))*X(:, find(DS.DL == p))', 1:size(U, 2), 'UniformOutput', false);
+% J = sum(cat(3, J{:}), 3);
+% W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
+W = rand(param.lowDim, param.featureDim);
 
-if local_env
-    param.numPrototypes = ones(size(U, 2), 1);
-    visualizeBoth(DS, W, U, param, [], [], 'test');
-    drawnow;
-end
+% if local_env
+%     param.numPrototypes = ones(size(U, 2), 1);
+%     visualizeBoth(DS, W, U, param, [], [], 'test');
+%     drawnow;
+% end
 
 [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
 

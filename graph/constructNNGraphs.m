@@ -24,10 +24,11 @@ for classNum=1:numClasses
 
     no_neighbors = find(all(A_c == 0, 1));
     [min_D_c, min_idx] = min(D_c, [], 2);
-    A_c(no_neighbors, min_idx(no_neighbors)) = 1;
-
-    A_c = triu(A_c) + triu(A_c)';
-
+    for n=no_neighbors
+        A_c(n, min_idx(n)) = 1;
+        A_c(min_idx(n), n) = 1;
+    end
+    
     nnGraphs{classNum} = A_c;
 end
 

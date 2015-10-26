@@ -1,9 +1,8 @@
-param.numClasses = 50;
-param.numClasses = 50;
+param.numClasses = 10;
 param.maxIterW = 1000;
 param.maxIterU = 1000;
 param.maxAlter = 100;
-param.lowDim = 100;
+param.lowDim = 3;
 param.featureDim = 500;
 
 param.num_clusters = 10;

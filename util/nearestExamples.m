@@ -18,8 +18,8 @@ else strcmp(dataType, 'test')
 end
 
 
-cumProtos = cumsum(param.numPrototypes);
-classProtoIdx = cumProtos(classNum-1)+1:cumProtos(classNum);
+cumProtos = [0; cumsum(param.numPrototypes)];
+classProtoIdx = cumProtos(classNum)+1:cumProtos(classNum+1);
 
 for p=classProtoIdx
     protoNum = p;
