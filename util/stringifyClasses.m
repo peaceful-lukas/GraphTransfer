@@ -13,7 +13,7 @@ if strcmp(dataset, 'awa') || strcmp(dataset, 'AwA_30_only') || strcmp(dataset, '
                 'pig', 'lion', 'mouse', 'polar+bear', 'collie',  ...
                 'walrus', 'raccoon', 'cow', 'dolphin'};
 
-elseif strcmp(dataset, 'voc')
+elseif strcmp(dataset, 'voc') || strcmp(dataset, 'voc_pca500')
     clsnames = {'aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', ...
             'diningtable', 'dog', 'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor'};
     

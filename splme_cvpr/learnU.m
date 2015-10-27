@@ -27,7 +27,14 @@ end
 function U = update(U, dU, param)
 
 U = U - param.lr_U * dU;
-% U = normc(U);
+
+if param.projected
+    for i=1:size(U, 2)
+        normUi = norm(U(:, i), 2);
+        coef = abs(1 - param.lambda_U / normUi);
+        U(:, i) = coef * U(:, i);
+    end
+end
 
 
 
@@ -38,11 +45,13 @@ X = DS.D;
 
 cTriplets = sampleClassificationTriplets(DS, W, U, param);
 mTriplets = sampleMembershipTriplets(DS, W, U, param);
+% mPairs = sampleMembershipUnaryPairs(DS, W, U, param);
 [sTriplets total_num_sTriplets] = sampleStructurePreservingTriplets(U, param);
 [sPairs total_num_sPairs] = sampleStructurePreservingUnaryPairs(U, param);
 
 num_cTriplets = size(cTriplets, 1);
 num_mTriplets = size(mTriplets, 1);
+% num_mPairs = size(mPairs, 1);
 num_sTriplets = size(sTriplets, 1);
 num_sPairs = size(sPairs, 1);
 
@@ -51,7 +60,7 @@ if num_cTriplets > 0
     grad_yi = -2*(WX(:, cTriplets(:, 1)) - U(:, cTriplets(:, 2)))*aux(:, cTriplets(:, 2))';
     grad_c  = -2*(WX(:, cTriplets(:, 1)) - U(:, cTriplets(:, 3)))*aux(:, cTriplets(:, 3))';
     c_dU = grad_yi - grad_c;
-    c_dU = bsxfun(@rdivide, c_dU, repelem(param.numInstancesPerClass', param.numPrototypes)); % normalize by the number of instances per each class
+    % c_dU = bsxfun(@rdivide, c_dU, repelem(param.numInstancesPerClass', param.numPrototypes)); % normalize by the number of instances per each class
     c_dU = c_dU/param.c_batchSize; % normalize by the number of samples for SGD
 end
 
@@ -63,6 +72,13 @@ if num_mTriplets > 0
     m_dU = bsxfun(@rdivide, m_dU, repelem(param.numInstancesPerClass', param.numPrototypes)); % normalize by the number of instances per each class
     m_dU = m_dU/param.m_batchSize; % normalize by the number of samples for SGD
 end
+
+% mp_dU = zeros(size(U));
+% if num_mPairs > 0
+%     mp_dU = -2*(WX(:, mPairs(:, 1)) - U(:, mPairs(:, 2)))*aux(:, mPairs(:, 2))';
+%     mp_dU = bsxfun(@rdivide, mp_dU, repelem(param.numInstancesPerClass', param.numPrototypes)); % normalize by the number of instances per each class
+%     mp_dU = mp_dU/param.m_batchSize;
+% end
 
 s_dU = zeros(size(U));
 if num_sTriplets > 0
@@ -83,11 +99,16 @@ if num_sPairs > 0
     sp_dU = sp_dU/total_num_sPairs;
 end
 
-
-dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*(s_dU + sp_dU) + param.lambda_U*U;
-% dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*s_dU + param.lambda_U*U;
-dU = dU/size(U, 2);
-
+if param.projected
+    dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*(s_dU + sp_dU);
+    dU = dU/size(U, 2);
+else
+    % dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*(s_dU + sp_dU) + param.lambda_U*U;
+    dU = param.bal_c*c_dU + param.lambda_U*U;
+    dU = param.bal_c*c_dU + param.bal_m*(m_dU + mp_dU) + param.bal_s*(s_dU + sp_dU) + param.lambda_U*U;
+    dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*s_dU + param.lambda_U*U;
+    dU = dU/size(U, 2);
+end
 
 
 

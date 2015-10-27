@@ -1,3 +1,27 @@
+
+% U_feature = zeros(param.featureDim, param.numClasses);
+% for n=1:param.numClasses
+%     U_feature(:, n) = mean(DS.D(:, find(DS.DL == n)), 2);
+% end
+% [~, pca_score, ~] = pca(U_feature');
+% pca_score = [pca_score ones(param.lowDim, 1)];
+% U = pca_score(:, 1:param.lowDim)';
+
+
+% param.numPrototypes = [1; 1; 1; 1];
+
+
+% X = DS.D;
+% projection_lambda = 1000000;
+% J = arrayfun(@(p) repmat(U(:, p), 1, length(find(DS.DL == p)))*X(:, find(DS.DL == p))', 1:size(U, 2), 'UniformOutput', false);
+% J = sum(cat(3, J{:}), 3);
+% W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
+
+
+
+
+
+
 % initial clustering
 k = param.num_clusters;
 [classProtos, param] = spectralClustering(DS, param, k);
@@ -8,23 +32,23 @@ U = pca_score(:, 1:param.lowDim)';
 
 
 % initialize W with ridge regression
-% tic
+tic
 X = DS.D;
-projection_lambda = 10000000;
+projection_lambda = 1000000000;
 J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
 J = sum(cat(3, J{:}), 3);
 W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
-% toc
+toc
 % W = randn(param.lowDim, param.featureDim);
 
 % re-initialize U by taking mean vectors of WX_c
-% U = [];
-% for i=1:sum(param.numPrototypes)
-%     exampleIdx = find(param.protoAssign == i);
-%     WX = sum(W*DS.D(:, exampleIdx), 2);
-%     u = WX/length(exampleIdx);
-%     U = [U u];
-% end
+U = [];
+for i=1:sum(param.numPrototypes)
+    exampleIdx = find(param.protoAssign == i);
+    WX = sum(W*DS.D(:, exampleIdx), 2);
+    u = WX/length(exampleIdx);
+    U = [U u];
+end
 
 fprintf('Before Training...\n');
 [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
@@ -35,6 +59,24 @@ fprintf('Before Training...\n');
 %     visualizePrototypes(U, param, [], []);
 %     drawnow;
 % end
+
+
+W0 = W;
+U0 = U;
+
+
+
+
+
+
+
+
+
+W = W0;
+U = U0;
+
+
+
 
 
 
@@ -69,8 +111,8 @@ while( n < param.maxAlter & iter_condition )
     n = n + 1;
 
     % if local_env && mod(n, 5) == 1
-        % coord_idx = visualizeBoth(DS, W, U, param, [], [], 'train');
-        coord_idx = visualizePrototypes(U, param, [], []);
-        drawnow;
+    %     coord_idx = visualizeBoth(DS, W, U, param, [], [], 'train');
+    %     coord_idx = visualizePrototypes(U, param, [], []);
+    %     drawnow;
     % end
 end

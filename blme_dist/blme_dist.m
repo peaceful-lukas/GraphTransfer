@@ -16,11 +16,11 @@ J = arrayfun(@(p) repmat(U(:, p), 1, length(find(DS.DL == p)))*X(:, find(DS.DL =
 J = sum(cat(3, J{:}), 3);
 W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
 
-if local_env
-    param.numPrototypes = ones(size(U, 2), 1);
-    visualizeBoth(DS, W, U, param, [], [], 'test');
-    drawnow;
-end
+% if local_env
+%     param.numPrototypes = ones(size(U, 2), 1);
+%     visualizeBoth(DS, W, U, param, [], [], 'test');
+%     drawnow;
+% end
 [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
 
 n = 0;

@@ -72,7 +72,8 @@ elseif strcmp(dataset, 'awa50_pca500'),         ds_dir = '/v9/AwA/allclass/proc_
 elseif strcmp(dataset, 'AwA_official'),         ds_dir = '/v9/AwA/official/proc/';
 elseif strcmp(dataset, 'AwA_30_only'),          ds_dir = '/v9/AwA/allclass_30_only/proc/';
 elseif strcmp(dataset, 'pascal3d_pascal'),      ds_dir = '/v9/PASCAL3D/pascal/proc/';
-elseif strcmp(dataset, 'voc'),                  ds_dir = '/v9/voc/proc/';
+elseif strcmp(dataset, 'voc'),                  ds_dir = '/v9/voc/proc/full/';
+elseif strcmp(dataset, 'voc_high'),             ds_dir = '/v9/voc/proc/high_res/';
 
 else
     fprintf('[loadDataset] no such a dataset.\nDataset dir has been set to be empty.\n');
@@ -90,7 +91,10 @@ elseif strcmp(dataset, 'awa50_pca500'),         ds_dir_local = '/Users/lukas/Des
 elseif strcmp(dataset, 'AwA_30_only'),          ds_dir_local = '/Users/lukas/Desktop/AwA_30_only/';
 elseif strcmp(dataset, 'pascal3d_pascal'),      ds_dir_local = '/Users/lukas/Desktop/pascal3d_pascal/';
 elseif strcmp(dataset, 'voc'),                  ds_dir_local = '/Users/lukas/Desktop/voc/';
+elseif strcmp(dataset, 'voc_high')              ds_dir_local = '/Users/lukas/Desktop/voc_high/';
 elseif strcmp(dataset, 'voc_pca500'),           ds_dir_local = '/Users/lukas/Desktop/voc_pca500/';
+elseif strcmp(dataset, 'voc_high_pca500')       ds_dir_local = '/Users/lukas/Desktop/voc_high_pca500/';
+
 
 
 end

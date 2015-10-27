@@ -4,11 +4,13 @@ X = DS.D;
 
 cTriplets = sampleClassificationTriplets(DS, W, U, param);
 mTriplets = sampleMembershipTriplets(DS, W, U, param);
+% mPairs = sampleMembershipUnaryPairs(DS, W, U, param);
 [sTriplets total_num_sTriplets] = sampleStructurePreservingTriplets(U, param);
 [sPairs total_num_sPairs] = sampleStructurePreservingUnaryPairs(U, param);
 
 num_cTriplets = size(cTriplets, 1);
 num_mTriplets = size(mTriplets, 1);
+% num_mPairs = size(mPairs, 1);
 num_sTriplets = size(sTriplets, 1);
 num_sPairs = size(sPairs, 1);
 
@@ -16,7 +18,7 @@ num_sPairs = size(sPairs, 1);
 cErr = 0;
 num_cV = 0;
 if num_cTriplets > 0
-    cErr_vec = param.m_lm + sum((W*X(:, cTriplets(:, 1)) - U(:, cTriplets(:, 2))).^2, 1) - sum((W*X(:, cTriplets(:, 1)) - U(:, cTriplets(:, 3))).^2, 1);
+    cErr_vec = param.c_lm + sum((W*X(:, cTriplets(:, 1)) - U(:, cTriplets(:, 2))).^2, 1) - sum((W*X(:, cTriplets(:, 1)) - U(:, cTriplets(:, 3))).^2, 1);
     viol_vec = find(cErr_vec > 0);
     num_cV = length(viol_vec);
     cErr = sum(cErr_vec);
@@ -33,6 +35,16 @@ if num_mTriplets > 0
     mErr = sum(mErr_vec);
     mErr = mErr/param.m_batchSize;
 end
+
+% mpErr = 0;
+% num_mpV = 0;
+% if num_mPairs > 0
+%     mpErr_vec = sum((W*X(:, mPairs(:, 1)) - U(:, mPairs(:, 2))).^2, 1) - param.m_sigma;
+%     viol_vec = find(mpErr_vec > 0);
+%     num_mpV = length(viol_vec);
+%     mpErr = sum(mpErr_vec);
+%     mpErr = mpErr/param.m_batchSize;
+% end
 
 
 sErr = 0;
@@ -59,9 +71,15 @@ if num_sPairs > 0
 end
 
 loss = param.bal_c*cErr + param.bal_m*mErr + param.bal_s*(sErr + spErr) + param.lambda_W*0.5*norm(W, 'fro')^2 + param.lambda_U*0.5*norm(U, 'fro')^2;
-fprintf('cV: %d / mV: %d / sV: %d / spV: %d / cE: %f / mE: %f / sE: %f / spE: %f / normW: %f / normU: %f / ', num_cV, num_mV, num_sV, num_spV, cErr, mErr, sErr, spErr, norm(W, 'fro')/size(W, 2), norm(U, 'fro')/size(U, 2));
+fprintf('cV: %d / mV: %d / sV(spV): %d(%d) / cE: %f / mE: %f / sE: %f / normW: %f / normU: %f / ', num_cV, num_mV, num_sV, num_spV, cErr, mErr, sErr+spErr, norm(W, 'fro')/size(W, 2), norm(U, 'fro')/size(U, 2));
 
-% loss = param.bal_c*cErr + param.bal_m*mErr + param.bal_s*sErr + param.lambda_W*0.5*norm(W, 'fro')^2 + param.lambda_U*0.5*norm(U, 'fro')^2;
-% fprintf('cV: %d / mV: %d / sV: %d / cE: %f / mE: %f / sE: %f / normW: %f / normU: %f / ', num_cV, num_mV, num_sV, cErr, mErr, sErr, norm(W, 'fro')/size(W, 2), norm(U, 'fro')/size(U, 2));
+% loss = param.bal_c*cErr + param.bal_m*mErr + param.lambda_W*0.5*norm(W, 'fro')^2 + param.lambda_U*0.5*norm(U, 'fro')^2;
+% fprintf('cV: %d / mV: %d / cE: %f / mE: %f / normW: %f / normU: %f / ', num_cV, num_mV, cErr, mErr, norm(W, 'fro')/size(W, 2), norm(U, 'fro')/size(U, 2));
+
+% loss = param.bal_c*cErr + param.lambda_W*0.5*norm(W, 'fro')^2 + param.lambda_U*0.5*norm(U, 'fro')^2;
+% fprintf('cV: %d / cE: %f / normW: %f / normU: %f / ', num_cV, cErr, norm(W, 'fro')/size(W, 2), norm(U, 'fro')/size(U, 2));
+
+
+
 
 

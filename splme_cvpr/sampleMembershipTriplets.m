@@ -5,7 +5,7 @@ X = DS.D;
 Y = DS.DL;
 proto_offset = [0; cumsum(param.numPrototypes)];
 
-i_vec = randi(numel(Y), param.c_batchSize, 1);
+i_vec = randi(numel(Y), param.m_batchSize, 1);
 m_vec = param.protoAssign(i_vec);
 t_vec = ceil(param.numPrototypes(Y(i_vec)).*rand(length(i_vec), 1));
 t_vec = t_vec + proto_offset(Y(i_vec));

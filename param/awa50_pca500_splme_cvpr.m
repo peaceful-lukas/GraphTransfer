@@ -16,7 +16,7 @@ param.s_batchSize = 100;
 param.lambda_W = 0.001; % regularizer coefficient
 param.lambda_U = 0.00001; % regularizer coefficient
 param.lr_W = 1; % learning rate for W
-param.lr_U = 0.01; % learning rate for U
+param.lr_U = 0.1; % learning rate for U
 
 % large margins
 param.c_lm = 10000000;

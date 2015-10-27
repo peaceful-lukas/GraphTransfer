@@ -26,4 +26,3 @@ viol_vec = find(c_err_vec > 0);
 
 
 cTriplets = cTriplets(viol_vec, :);
-
