@@ -1,11 +1,11 @@
-param.numClasses = 4;
+param.numClasses = 20;
 param.maxIterW = 1000;
 param.maxIterU = 1000;
 param.maxAlter = 100;
 param.lowDim = 35;
 param.featureDim = 9216;
 
-param.num_clusters = 10;
+param.num_clusters = 1;
 
 param.projected = true;
 
@@ -14,8 +14,12 @@ param.c_batchSize = 100;
 param.m_batchSize = 100;
 param.s_batchSize = 100;
 
-param.lambda_W = 0.0005; % regularizer coefficient
-param.lambda_U = 20; % regularizer coefficient
+% 4 classes
+% param.lambda_W = 0.0005; % regularizer coefficient
+% param.lambda_U = 20; % regularizer coefficient
+
+param.lambda_W = 0.005; % regularizer coefficient
+param.lambda_U = 70; % regularizer coefficient
 param.lr_W = 0.01; % learning rate for W
 param.lr_U = 0.01; % learning rate for U
 

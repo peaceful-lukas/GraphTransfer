@@ -1,64 +1,64 @@
 
-% U_feature = zeros(param.featureDim, param.numClasses);
-% for n=1:param.numClasses
-%     U_feature(:, n) = mean(DS.D(:, find(DS.DL == n)), 2);
-% end
-% [~, pca_score, ~] = pca(U_feature');
-% pca_score = [pca_score ones(param.lowDim, 1)];
-% U = pca_score(:, 1:param.lowDim)';
-
-
-% param.numPrototypes = [1; 1; 1; 1];
-
-
-% X = DS.D;
-% projection_lambda = 1000000;
-% J = arrayfun(@(p) repmat(U(:, p), 1, length(find(DS.DL == p)))*X(:, find(DS.DL == p))', 1:size(U, 2), 'UniformOutput', false);
-% J = sum(cat(3, J{:}), 3);
-% W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
-
-
-
-
-
-
-% initial clustering
-k = param.num_clusters;
-[classProtos, param] = spectralClustering(DS, param, k);
-
-% initialize U by pca of cluster prototypes
-[~, pca_score, ~] = pca(classProtos');
+U_feature = zeros(param.featureDim, param.numClasses);
+for n=1:param.numClasses
+    U_feature(:, n) = mean(DS.D(:, find(DS.DL == n)), 2);
+end
+[~, pca_score, ~] = pca(U_feature');
+pca_score = [pca_score ones(param.lowDim, 1)];
 U = pca_score(:, 1:param.lowDim)';
 
 
-% initialize W with ridge regression
-tic
+param.numPrototypes = [1; 1; 1; 1];
+
+
 X = DS.D;
-projection_lambda = 1000000000;
-J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
+projection_lambda = 1000000;
+J = arrayfun(@(p) repmat(U(:, p), 1, length(find(DS.DL == p)))*X(:, find(DS.DL == p))', 1:size(U, 2), 'UniformOutput', false);
 J = sum(cat(3, J{:}), 3);
 W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
-toc
-% W = randn(param.lowDim, param.featureDim);
 
-% re-initialize U by taking mean vectors of WX_c
-U = [];
-for i=1:sum(param.numPrototypes)
-    exampleIdx = find(param.protoAssign == i);
-    WX = sum(W*DS.D(:, exampleIdx), 2);
-    u = WX/length(exampleIdx);
-    U = [U u];
-end
 
-fprintf('Before Training...\n');
-[~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
 
-% visualize data distribution / class prototypes
-% if local_env
-%     visualizeBoth(DS, W, U, param, [], [], 'train');
-%     visualizePrototypes(U, param, [], []);
-%     drawnow;
+
+
+
+% % initial clustering
+% k = param.num_clusters;
+% [classProtos, param] = spectralClustering(DS, param, k);
+
+% % initialize U by pca of cluster prototypes
+% [~, pca_score, ~] = pca(classProtos');
+% U = pca_score(:, 1:param.lowDim)';
+
+
+% % initialize W with ridge regression
+% tic
+% X = DS.D;
+% projection_lambda = 1000000000;
+% J = arrayfun(@(p) repmat(U(:, p), 1, length(find(param.protoAssign == p)))*X(:, find(param.protoAssign == p))', 1:sum(param.numPrototypes), 'UniformOutput', false);
+% J = sum(cat(3, J{:}), 3);
+% W = J*pinv(X*X'+projection_lambda*eye(param.featureDim));
+% toc
+% % W = randn(param.lowDim, param.featureDim);
+
+% % re-initialize U by taking mean vectors of WX_c
+% U = [];
+% for i=1:sum(param.numPrototypes)
+%     exampleIdx = find(param.protoAssign == i);
+%     WX = sum(W*DS.D(:, exampleIdx), 2);
+%     u = WX/length(exampleIdx);
+%     U = [U u];
 % end
+
+% fprintf('Before Training...\n');
+% [~, accuracy] = dispAccuracy(param.method, DS, W, U, param);
+
+% % visualize data distribution / class prototypes
+% % if local_env
+% %     visualizeBoth(DS, W, U, param, [], [], 'train');
+% %     visualizePrototypes(U, param, [], []);
+% %     drawnow;
+% % end
 
 
 W0 = W;

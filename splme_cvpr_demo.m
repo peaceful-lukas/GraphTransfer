@@ -27,7 +27,7 @@ method = 'splme_cvpr';
 
 DS = loadDataset(dataset, local_env);
 param = setParameters(dataset, method);
-param.numInstancesPerClass = hist(DS.DL, 4)';
+param.numInstancesPerClass = hist(DS.DL, 20)';
 
 splme_cvpr;
 
