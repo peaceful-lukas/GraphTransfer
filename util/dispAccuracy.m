@@ -29,9 +29,8 @@ function [train_acc test_acc] = dispAccuracy(method, DS, W, U, param)
         
     elseif strcmp(method, 'splme_dist') || strcmp(method, 'splme_dist_const') || strcmp(method, 'spcl') || strcmp(method, 'splme_cvpr')
         cumNumProto = cumsum(param.numPrototypes);
-        D = arrayfun(@(p) sum((W*DS.D - repmat(U(:, p), 1, length(DS.DL))).^2, 1), 1:sum(param.numPrototypes), 'UniformOutput', false);
-        D = cat(1, D{:});
-        [~, classified_raw] = min(D, [], 1);
+        D = pdist2((W*DS.D)', U');
+        [~, classified_raw] = min(D, [], 2);
         classified = zeros(numel(classified_raw), 1);
         for c = 1:param.numClasses
             t = find(classified_raw <= cumNumProto(c));
@@ -43,9 +42,8 @@ function [train_acc test_acc] = dispAccuracy(method, DS, W, U, param)
 
 
         cumNumProto = cumsum(param.numPrototypes);
-        D = arrayfun(@(p) sum((W*DS.T - repmat(U(:, p), 1, length(DS.TL))).^2, 1), 1:sum(param.numPrototypes), 'UniformOutput', false);
-        D = cat(1, D{:});
-        [~, classified_raw] = min(D, [], 1);
+        D = pdist2((W*DS.T)', U');
+        [~, classified_raw] = min(D, [], 2);
         classified = zeros(numel(classified_raw), 1);
         for c = 1:param.numClasses
             t = find(classified_raw <= cumNumProto(c));

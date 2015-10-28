@@ -46,7 +46,7 @@ splme_cvpr;
 % TRANSFER PROTOTYPES
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clearvars -except DS local_env
-load ~/Desktop/exp_results/voc_high/splme_cvpr_voc_high_8649.mat % dimension 100 maximum accuracy
+load ~/Desktop/exp_results/voc_high/splme_cvpr_voc_high_8677.mat % dimension 100 maximum accuracy
 dataset = 'voc_high';
 method = 'splme_cvpr';
 local_env = 1;
@@ -54,33 +54,22 @@ param = result{1};
 W = result{2};
 U = result{3};
 
-coord_idx = visualizePrototypes(U, param, [], []);
+getConfusionMatrix(DS, W, U, param, 'dist')
+% coord_idx = visualizePrototypes(U, param, [], []);
 
-param.lambda_W_local = 0.001;
-param.lambda_U_local = 0.00001; % or 5
-param.lr_U_local = 0.1;
+param.lambda_U_local = 0.1; % or 5
+param.lr_U_local = param.lr_U*0.1;
 
-% clsnames = stringifyClasses(param.dataset);
-clsnames = {'bicycle', 'motorbike', 'bus', 'train'};
-% [tPairs str_tPairs scores S] = transferPairs(U, param);
-tPairs = [1 2; 3 4];
+clsnames = stringifyClasses(param.dataset);
+[tPairs str_tPairs scores S] = transferPairs(U, param);
 % [tPairs str_tPairs] = setTransferDirections(tPairs, str_tPairs, perClassScores);
 
 
-new_tPairs = zeros(3, 2);
-new_tPairs(1, :) = tPairs(1, [1 2]);
-new_tPairs(2, :) = tPairs(4, [1 2]);
-new_tPairs(3, :) = tPairs(8, [2 1]);
-% tPairs(2:4, :) = tPairs(2:4, [2 1]);
-% str_tPairs(2:4, :) = str_tPairs(2:4, [2 1]);
-tPairs = new_tPairs;
-
-
 % visualizeTargetClassesBoth(DS, W, U, param, coord_idx, [1 2 3], 'test');
-visualizeTargetExamplesWithAllPrototypes(DS, W, U, param, coord_idx, [1 2 3], 'test');
-transfer_dispAccuracies(DS, W, U, W, U, param, param);
+% visualizeTargetExamplesWithAllPrototypes(DS, W, U, param, coord_idx, [1 2 3], 'test');
+% transfer_dispAccuracies(DS, W, U, W, U, param, param);
 
-
+tPairs = [4 3; 1 2];
 
 param0 = param;
 param_new = param;
@@ -89,29 +78,32 @@ param_prev = param;
 U0 = U;
 U_prev = U;
 U_new = U;
-
-for i=1:size(tPairs, 1)
+i = 1;
+% for i=1:size(tPairs, 1)
 
     % Transfer direction : c1 ------->>> c2
     c1 = tPairs(i, 1);
     c2 = tPairs(i, 2);
     fprintf('\n\n\n================================ %s ---> %s ================================\n', clsnames{c1}, clsnames{c2});
 
-    scale_alpha = 1;
+    scale_alpha = 0.03; % transfer 1st.
+    % scale_alpha = 0.01; % transfer 2nd.
     [U_new, param_new, matched_pairs, inferred_idx, trainTargetClasses, score_GM] = transfer(DS, W, U_new, W, U_prev, c1, c2, scale_alpha, param_new, param_prev);
+
+    getConfusionMatrix(DS, W, U_new, param_new, 'dist')
 
     U_prev = U_new;
     param_prev = param_new;
 
     % Visualize
-    coord_idx = visualizePrototypes(U_new, param_new, coord_idx, inferred_idx);
+    % coord_idx = visualizePrototypes(U_new, param_new, coord_idx, inferred_idx);
     % pause;
 
     % if length(trainTargetClasses) > 0
         % clsnames(trainTargetClasses)'
         % Locally train
-        % [U_new param_new] = local_train(DS, W, U_new, param_new, trainTargetClasses);
-
+        [U_new param_new] = local_train(DS, W, U_new, param_new);
+        getConfusionMatrix(DS, W, U_new, param_new, 'dist')
     %     % Result
         % transfer_dispAccuracies(DS, W, U_new, W, U_prev, param_new, param_prev);
 
@@ -126,8 +118,8 @@ for i=1:size(tPairs, 1)
     %     fprintf('No classes to be learned locally.\n');
     % end
 
-    % [C_prev pr_labels_prev] = getConfusionMatrix(DS, W, U_prev, param_prev);
-    % [C_new pr_labels_new] = getConfusionMatrix(DS, W, U_new, param_new);
+    [C_prev pr_labels_prev] = getConfusionMatrix(DS, W, U_prev, param_prev, 'dist');
+    [C_new pr_labels_new] = getConfusionMatrix(DS, W, U_new, param_new, 'dist');
 
     % opts.type = 'predicted';
     % opts.numRows = 5;

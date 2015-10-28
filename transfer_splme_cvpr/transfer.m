@@ -16,14 +16,14 @@ sim_scores = sort(simMatrix(:), 'descend');
 
 %%%%%% Graph Matching - RRWM
 param_gm.maxIterGM = 10;
-param_gm.match_thrsh = sim_scores(min(numProto_c1, numProto_c2));
-param_gm.match_sim_thrsh = sim_scores(max(numProto_c1, numProto_c2));
+param_gm.match_thrsh = sim_scores(floor(param_prev.num_clusters/5));
+param_gm.match_sim_thrsh = sim_scores(floor(param_prev.num_clusters/2));
 param_gm.knn1 = 3;
 param_gm.knn2 = 4;
 param_gm.voting_alpha = 10;
 
 
-[X_sol, cand_matches, score_GM] = progGM(U_c1, U_c2, param_gm);
+[X_sol, cand_matches, score_GM] = progGM(U_c1, U_c2, param_gm, 'sim');
 matched_pairs = cand_matches(find(X_sol), :);
 numMatched = size(matched_pairs, 1);
 
@@ -88,8 +88,8 @@ param_new.numPrototypes(c2) = param_new.numPrototypes(c2) + length(unmatched);
 
 
 
-A1 = param_new.knnGraphs{c1};
-A2 = param_new.knnGraphs{c2};
+A1 = param_new.nnGraphs{c1};
+A2 = param_new.nnGraphs{c2};
 A2_new = zeros(size(A2, 1)+length(unmatched));
 A2_new(1:size(A2, 1), 1:size(A2, 1)) = A2;
 
@@ -104,7 +104,7 @@ end
 
 A2_new(n+1:end, n+1:end) = A1(unmatched, unmatched);
 
-param_new.knnGraphs{c2} = A2_new;
+param_new.nnGraphs{c2} = A2_new;
 
 
 
@@ -149,11 +149,14 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function orig_acc = getOriginalAccuracy(cls, DS, W0, U_prev, param_prev)
 
-% %%%%%% Disp Accuracy
+
+
+
 cumNumProto = cumsum(param_prev.numPrototypes);
 classIdx = find(DS.TL == cls);
-class_feat = DS.T(:, classIdx);
-[~, classified_raw]= max(class_feat'*W0'*U_prev, [], 2);
+X_c = DS.T(:, classIdx);
+D = pdist2((W0*X_c)', U_prev');
+[~, classified_raw] = min(D, [], 2);
 classified = zeros(numel(classified_raw), 1);
 for c = 1:param_prev.numClasses
     t = find(classified_raw <= cumNumProto(c));
@@ -161,6 +164,22 @@ for c = 1:param_prev.numClasses
     classified_raw(t) = Inf;
 end
 orig_acc = numel(find(classified == cls))/numel(find(DS.TL == cls));
+
+
+
+
+% %%%%%% Disp Accuracy
+% cumNumProto = cumsum(param_prev.numPrototypes);
+% classIdx = find(DS.TL == cls);
+% class_feat = DS.T(:, classIdx);
+% [~, classified_raw]= max(class_feat'*W0'*U_prev, [], 2);
+% classified = zeros(numel(classified_raw), 1);
+% for c = 1:param_prev.numClasses
+%     t = find(classified_raw <= cumNumProto(c));
+%     classified(t) = c;
+%     classified_raw(t) = Inf;
+% end
+% orig_acc = numel(find(classified == cls))/numel(find(DS.TL == cls));
 % fprintf('ORIGINAL accuracy for class %d ----> %.4f\n', cls, orig_acc);
 
 
@@ -168,10 +187,12 @@ orig_acc = numel(find(classified == cls))/numel(find(DS.TL == cls));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function new_acc = getNewAccuracy(cls, DS, W_new, U_new, param_new)
 
+
 cumNumProto = cumsum(param_new.numPrototypes);
 classIdx = find(DS.TL == cls);
-class_feat = DS.T(:, classIdx);
-[~, classified_raw]= max(class_feat'*W_new'*U_new, [], 2);
+X_c = DS.T(:, classIdx);
+D = pdist2((W_new*X_c)', U_new');
+[~, classified_raw] = min(D, [], 2);
 classified = zeros(numel(classified_raw), 1);
 for c = 1:param_new.numClasses
     t = find(classified_raw <= cumNumProto(c));
@@ -179,5 +200,21 @@ for c = 1:param_new.numClasses
     classified_raw(t) = Inf;
 end
 new_acc = numel(find(classified == cls))/numel(find(DS.TL == cls));
-% fprintf('TRANSFER accuracy for class %d ----> %.4f\n', cls, new_acc);
+
+
+
+
+% cumNumProto = cumsum(param_new.numPrototypes);
+% classIdx = find(DS.TL == cls);
+% class_feat = DS.T(:, classIdx);
+% [~, classified_raw]= max(class_feat'*W_new'*U_new, [], 2);
+% classified = zeros(numel(classified_raw), 1);
+% for c = 1:param_new.numClasses
+%     t = find(classified_raw <= cumNumProto(c));
+%     classified(t) = c;
+%     classified_raw(t) = Inf;
+% end
+% new_acc = numel(find(classified == cls))/numel(find(DS.TL == cls));
+% % fprintf('TRANSFER accuracy for class %d ----> %.4f\n', cls, new_acc);
+
 

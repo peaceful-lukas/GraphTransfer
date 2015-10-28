@@ -1,4 +1,4 @@
-function [X_sol candidate_matches score_GM] = progressiveGraphMatching(U1, U2, param)
+function [X_sol candidate_matches score_GM] = progressiveGraphMatching(U1, U2, param, methodType)
 % revised Progressive Graph Matching
 % ( Graph matching after sp-LME )
 % 
@@ -14,7 +14,7 @@ function [X_sol candidate_matches score_GM] = progressiveGraphMatching(U1, U2, p
     maxIterGM = param.maxIterGM;
 
     % find initial matches
-    [candidate_matches_new, scores] = initial_match(U1, U2, param);
+    [candidate_matches_new, scores] = initial_match(U1, U2, param, methodType);
     affinityMatrix_new = computeAffinityMatrix(U1, U2, candidate_matches_new);
     [group1, group2] = make_group12(candidate_matches_new);
 

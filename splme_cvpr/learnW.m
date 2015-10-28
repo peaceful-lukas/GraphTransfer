@@ -46,12 +46,10 @@ function dW = computeGradient(DS, W, U, param)
 X = DS.D;
 
 cTriplets = sampleClassificationTriplets(DS, W, U, param);
-mTriplets = sampleMembershipTriplets(DS, W, U, param);
-% mPairs = sampleMembershipUnaryPairs(DS, W, U, param);
+% mTriplets = sampleMembershipTriplets(DS, W, U, param);
 
 num_cTriplets = size(cTriplets, 1);
-num_mTriplets = size(mTriplets, 1);
-% num_mPairs = size(mPairs, 1);
+% num_mTriplets = size(mTriplets, 1);
 
 
 c_dW = zeros(size(W));
@@ -61,22 +59,17 @@ if num_cTriplets > 0
     c_dW = c_dW/param.c_batchSize;
 end
 
-m_dW = zeros(size(W));
-if num_mTriplets > 0
-    m_dW = -2*(U(:, mTriplets(:, 2)) - U(:, mTriplets(:, 3)))*bsxfun(@times, X(:, mTriplets(:, 1))', 1./param.numInstancesPerClass(DS.DL(mTriplets(:, 1))));
-    m_dW = m_dW/param.m_batchSize;
-end
-
-% mp_dW = zeros(size(W));
-% if num_mPairs > 0
-%     mp_dW = 2*(W*X(:, mPairs(:, 1)) - U(:, mPairs(:, 2)))*bsxfun(@times, X(:, mPairs(:, 1))', 1./param.numInstancesPerClass(DS.DL(mPairs(:, 1))));
-%     mp_dW = mp_dW/param.m_batchSize;
+% m_dW = zeros(size(W));
+% if num_mTriplets > 0
+%     m_dW = -2*(U(:, mTriplets(:, 2)) - U(:, mTriplets(:, 3)))*bsxfun(@times, X(:, mTriplets(:, 1))', 1./param.numInstancesPerClass(DS.DL(mTriplets(:, 1))));
+%     m_dW = m_dW/param.m_batchSize;
 % end
 
-% dW = param.bal_c*c_dW + param.bal_m*(m_dW + mp_dW) + param.lambda_W*W;
+
 
 if param.projected
-    dW = param.bal_c*c_dW + param.bal_m*m_dW;
+    dW = param.bal_c*c_dW;
+    % dW = param.bal_c*c_dW + param.bal_m*m_dW;
     dW = dW/size(W, 2);
 else
     dW = param.bal_c*c_dW + param.bal_m*m_dW + param.lambda_W*W;

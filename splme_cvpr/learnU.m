@@ -44,16 +44,14 @@ function dU = computeGradient(DS, W, U, WX, aux, param)
 X = DS.D;
 
 cTriplets = sampleClassificationTriplets(DS, W, U, param);
-mTriplets = sampleMembershipTriplets(DS, W, U, param);
-% mPairs = sampleMembershipUnaryPairs(DS, W, U, param);
-[sTriplets total_num_sTriplets] = sampleStructurePreservingTriplets(U, param);
-[sPairs total_num_sPairs] = sampleStructurePreservingUnaryPairs(U, param);
+% mTriplets = sampleMembershipTriplets(DS, W, U, param);
+% [sTriplets total_num_sTriplets] = sampleStructurePreservingTriplets(U, param);
+% [sPairs total_num_sPairs] = sampleStructurePreservingUnaryPairs(U, param);
 
 num_cTriplets = size(cTriplets, 1);
-num_mTriplets = size(mTriplets, 1);
-% num_mPairs = size(mPairs, 1);
-num_sTriplets = size(sTriplets, 1);
-num_sPairs = size(sPairs, 1);
+% num_mTriplets = size(mTriplets, 1);
+% num_sTriplets = size(sTriplets, 1);
+% num_sPairs = size(sPairs, 1);
 
 c_dU = zeros(size(U));
 if num_cTriplets > 0
@@ -64,49 +62,40 @@ if num_cTriplets > 0
     c_dU = c_dU/param.c_batchSize; % normalize by the number of samples for SGD
 end
 
-m_dU = zeros(size(U));
-if num_mTriplets > 0
-    grad_m = -2*(WX(:, mTriplets(:, 1)) - U(:, mTriplets(:, 2)))*aux(:, mTriplets(:, 2))';
-    grad_t = -2*(WX(:, mTriplets(:, 1)) - U(:, mTriplets(:, 3)))*aux(:, mTriplets(:, 3))';
-    m_dU = grad_m - grad_t;
-    m_dU = bsxfun(@rdivide, m_dU, repelem(param.numInstancesPerClass', param.numPrototypes)); % normalize by the number of instances per each class
-    m_dU = m_dU/param.m_batchSize; % normalize by the number of samples for SGD
-end
-
-% mp_dU = zeros(size(U));
-% if num_mPairs > 0
-%     mp_dU = -2*(WX(:, mPairs(:, 1)) - U(:, mPairs(:, 2)))*aux(:, mPairs(:, 2))';
-%     mp_dU = bsxfun(@rdivide, mp_dU, repelem(param.numInstancesPerClass', param.numPrototypes)); % normalize by the number of instances per each class
-%     mp_dU = mp_dU/param.m_batchSize;
+% m_dU = zeros(size(U));
+% if num_mTriplets > 0
+%     grad_m = -2*(WX(:, mTriplets(:, 1)) - U(:, mTriplets(:, 2)))*aux(:, mTriplets(:, 2))';
+%     grad_t = -2*(WX(:, mTriplets(:, 1)) - U(:, mTriplets(:, 3)))*aux(:, mTriplets(:, 3))';
+%     m_dU = grad_m - grad_t;
+%     m_dU = bsxfun(@rdivide, m_dU, repelem(param.numInstancesPerClass', param.numPrototypes)); % normalize by the number of instances per each class
+%     m_dU = m_dU/param.m_batchSize; % normalize by the number of samples for SGD
 % end
 
-s_dU = zeros(size(U));
-if num_sTriplets > 0
-    s1 = -2*(U(:, sTriplets(:, 2)) - U(:, sTriplets(:, 3)))*aux(:, sTriplets(:, 1))';
-    s2 = -2*(U(:, sTriplets(:, 1)) - U(:, sTriplets(:, 2)))*aux(:, sTriplets(:, 2))';
-    s3 = -2*(U(:, sTriplets(:, 1)) - U(:, sTriplets(:, 3)))*aux(:, sTriplets(:, 3))';
+% s_dU = zeros(size(U));
+% if num_sTriplets > 0
+%     s1 = -2*(U(:, sTriplets(:, 2)) - U(:, sTriplets(:, 3)))*aux(:, sTriplets(:, 1))';
+%     s2 = -2*(U(:, sTriplets(:, 1)) - U(:, sTriplets(:, 2)))*aux(:, sTriplets(:, 2))';
+%     s3 = -2*(U(:, sTriplets(:, 1)) - U(:, sTriplets(:, 3)))*aux(:, sTriplets(:, 3))';
 
-    s_dU = s1 + s2 + s3;
-    s_dU = s_dU/total_num_sTriplets; % normalize by the number of samples for SGD
-end
+%     s_dU = s1 + s2 + s3;
+%     s_dU = s_dU/total_num_sTriplets; % normalize by the number of samples for SGD
+% end
 
-sp_dU = zeros(size(U));
-if num_sPairs > 0
-    sp1 = -2*(U(:, sPairs(:, 1)) - U(:, sPairs(:, 2)))*aux(:, sPairs(:, 1))';
-    sp2 = -2*(U(:, sPairs(:, 2)) - U(:, sPairs(:, 1)))*aux(:, sPairs(:, 2))';
+% sp_dU = zeros(size(U));
+% if num_sPairs > 0
+%     sp1 = -2*(U(:, sPairs(:, 1)) - U(:, sPairs(:, 2)))*aux(:, sPairs(:, 1))';
+%     sp2 = -2*(U(:, sPairs(:, 2)) - U(:, sPairs(:, 1)))*aux(:, sPairs(:, 2))';
 
-    sp_dU = sp1 + sp2;
-    sp_dU = sp_dU/total_num_sPairs;
-end
+%     sp_dU = sp1 + sp2;
+%     sp_dU = sp_dU/total_num_sPairs;
+% end
 
 if param.projected
-    dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*(s_dU + sp_dU);
+    dU = param.bal_c*c_dU;
+    % dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*(s_dU + sp_dU);
     dU = dU/size(U, 2);
 else
-    % dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*(s_dU + sp_dU) + param.lambda_U*U;
-    dU = param.bal_c*c_dU + param.lambda_U*U;
-    dU = param.bal_c*c_dU + param.bal_m*(m_dU + mp_dU) + param.bal_s*(s_dU + sp_dU) + param.lambda_U*U;
-    dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*s_dU + param.lambda_U*U;
+    dU = param.bal_c*c_dU + param.bal_m*m_dU + param.bal_s*(s_dU + sp_dU) + param.lambda_U*U;
     dU = dU/size(U, 2);
 end
 

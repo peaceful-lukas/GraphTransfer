@@ -16,7 +16,8 @@ catch
     fprintf('error generating targeted prototypes..\n');
 end
 
-U_retrained = local_learnU(DS, W, U_new, param_new, trainTargetClasses, targetProtoIdx, true);
+% U_retrained = local_learnU(DS, W, U_new, param_new, trainTargetClasses, targetProtoIdx, true);
+U_retrained = local_learnU(DS, W, U_new, param_new, [], [], true);
 
 fprintf('Local LME RESULT\n');
 fprintf('\tbefore\n');

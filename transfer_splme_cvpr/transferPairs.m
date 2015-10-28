@@ -23,7 +23,7 @@ S_sorted = sort(S(:), 'descend');
 
 S_tmp = S;
 % S_tmp(find(S_tmp < 0.7)) = 0;
-S_tmp(find(S_tmp < S_sorted(param.numClasses))) = 0;
+S_tmp(find(S_tmp < S_sorted(floor(param.numClasses/2)))) = 0;
 
 % transfer direction : <-------- ( but not important since S is a symmetric matrix.)
 tPairs = [floor((find(S_tmp)-1)/param.numClasses)+1 mod(find(S_tmp), param.numClasses)];
@@ -57,7 +57,16 @@ function str_tPairs = stringifyClasses(tPairs, dataset)
 
 str_tPairs = cell(size(tPairs));
 
-if strcmp(dataset, 'awa') || strcmp(dataset, 'AwA_30_only')
+if strcmp(dataset, 'voc_high')
+    clsnames = {'bicycle', 'motorbike', 'bus', 'train'};
+
+    for i=1:size(tPairs, 1)
+        for j=1:2
+            str_tPairs{i, j} = clsnames{tPairs(i, j)};
+        end
+    end
+
+elseif strcmp(dataset, 'awa') || strcmp(dataset, 'AwA_30_only')
     clsname = {'antelope', 'grizzly+bear', 'killer+whale', 'beaver', 'dalmatian', ...
                 'persian+cat', 'horse', 'german+shepherd', 'blue+whale', 'siamese+cat', ...
                 'skunk', 'mole', 'tiger', 'hippopotamus', 'leopard', 'moose', ...
