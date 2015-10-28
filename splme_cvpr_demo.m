@@ -11,14 +11,14 @@ addpath 'tool/'
 addpath 'tool/vis/'
 addpath 'tool/vis/distinguishable_colors/'
 
-% dataset = 'awa50';
+dataset = 'awa50';
 % dataset = 'awa50_pca500';
 % dataset = 'awa10_pca500';
 
 % dataset = 'voc_pca500';
 % dataset = 'voc4_pca500';
 
-dataset = 'voc_high';
+% dataset = 'voc_high';
 
 % dataset = 'voc_high_pca500';
 % dataset = 'voc4_high_pca500';
